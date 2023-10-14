@@ -23,7 +23,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="150dp"
-                android:id="@+id/imgFloor"
+                android:id="@+id/imgRoom"
                 android:scaleType="fitXY"
                 android:src="@drawable/imagefloor"
                 />
@@ -34,20 +34,20 @@
                 android:textColor="#706666"
                 android:layout_marginLeft="5dp"
                 android:textSize="22dp"
-                android:id="@+id/txtNameFloor"
+                android:id="@+id/txtNameRoom"
                 android:layout_marginTop="20dp"
-                android:layout_below="@id/imgFloor"/>
+                android:layout_below="@id/imgRoom"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="#706666"
                 android:textSize="22dp"
-                android:id="@+id/txtIdFloor"
+                android:id="@+id/txtIdRoom"
                 android:layout_marginTop="20dp"
-                android:layout_below="@id/imgFloor"
+                android:layout_below="@id/imgRoom"
                 android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@id/txtNameFloor"/>
+                android:layout_toRightOf="@id/txtNameRoom"/>
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

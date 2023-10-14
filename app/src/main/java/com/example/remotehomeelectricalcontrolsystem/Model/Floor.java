@@ -1,27 +1,41 @@
 package com.example.remotehomeelectricalcontrolsystem.Model;
 
+import java.util.List;
+
 public class Floor {
-    public int idFloor;
-    public String nameFloor;
+    public String id;
 
-    public Floor(int idFloor, String nameFloor) {
-        this.idFloor = idFloor;
-        this.nameFloor = nameFloor;
+    public Floor(String id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    public int getIdFloor() {
-        return idFloor;
+    public String getId() {
+        return id;
     }
 
-    public void setIdFloor(int idFloor) {
-        this.idFloor = idFloor;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getNameFloor() {
-        return nameFloor;
+    public String name;
+
+    public List<Room> getRoomList() {
+        return roomList;
     }
 
-    public void setNameFloor(String nameFloor) {
-        this.nameFloor = nameFloor;
+    public void setRoomList(List<Room> roomList) {
+        this.roomList = roomList;
+    }
+
+    public List<Room> roomList;
+
+    // Getters and setters
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

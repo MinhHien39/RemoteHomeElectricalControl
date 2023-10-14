@@ -1,37 +1,61 @@
 package com.example.remotehomeelectricalcontrolsystem.Model;
 
-public class Room {
-    public int idRoom;
-    public String nameRoom;
-    public int idFloor;
+import java.util.List;
 
-    public Room(int idRoom, String nameRoom, int idFloor) {
+public class Room {
+
+        private String idRoom;
+
+    public Room(String idRoom, String name) {
         this.idRoom = idRoom;
-        this.nameRoom = nameRoom;
-        this.idFloor = idFloor;
+        this.name = name;
     }
 
-    public int getIdRoom() {
+    public String getIdRoom() {
         return idRoom;
     }
 
-    public void setIdRoom(int idRoom) {
+    public void setIdRoom(String idRoom) {
         this.idRoom = idRoom;
     }
 
-    public String getNameRoom() {
-        return nameRoom;
-    }
+    private List<Device> deviceList;
+        private String name;
+        private List<DHT> dhtList;
+        private List<OtherSensor> otherSensorList;
 
-    public void setNameRoom(String nameRoom) {
-        this.nameRoom = nameRoom;
-    }
 
-    public int getIdFloor() {
-        return idFloor;
-    }
 
-    public void setIdFloor(int idFloor) {
-        this.idFloor = idFloor;
-    }
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public List<Device> getDeviceList() {
+            return deviceList;
+        }
+
+        public void setDeviceList(List<Device> deviceList) {
+            this.deviceList = deviceList;
+        }
+
+        public List<DHT> getDhtList() {
+            return dhtList;
+        }
+
+        public void setDhtList(List<DHT> dhtList) {
+            this.dhtList = dhtList;
+        }
+
+        public List<OtherSensor> getOtherSensorList() {
+            return otherSensorList;
+        }
+
+        public void setOtherSensorList(List<OtherSensor> otherSensorList) {
+            this.otherSensorList = otherSensorList;
+        }
+
 }
