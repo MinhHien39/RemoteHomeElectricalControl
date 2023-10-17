@@ -3,21 +3,18 @@ package com.example.remotehomeelectricalcontrolsystem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.example.remotehomeelectricalcontrolsystem.Fragment.HomeFragment;
 import com.example.remotehomeelectricalcontrolsystem.Fragment.ProfileFragment;
-import com.example.remotehomeelectricalcontrolsystem.databinding.ActivityMainBinding;
-import com.example.remotehomeelectricalcontrolsystem.R;
+import com.example.remotehomeelectricalcontrolsystem.Model.SharedUser;
+import com.example.remotehomeelectricalcontrolsystem.Model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
     FrameLayout frameLayout;
@@ -25,13 +22,19 @@ public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    User user = SharedUser.getUser();
+    if (user != null) {
+    } else {
+      Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+      startActivity(intent);
+      finish();
+    }
 
-        int i = 1;
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().setReorderingAllowed(true).replace(R.id.frame_layout,
                     HomeFragment.class , null).commit();
@@ -52,7 +55,5 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-    }
-
-
+  }
 }
