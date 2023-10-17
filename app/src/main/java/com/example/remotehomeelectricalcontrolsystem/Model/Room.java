@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Room {
 
-        private String idRoom;
+    private String idRoom;
     private String imgUrl;
 
     public String getImgUrl() {
@@ -15,10 +15,12 @@ public class Room {
         this.imgUrl = imgUrl;
     }
 
-    public Room(String idRoom, String name , String imgUrl) {
+    public Room(String idRoom, String nameRoom , String imgUrl , List<CheckDevice> list) {
         this.idRoom = idRoom;
-        this.name = name;
+        this.nameRoom = nameRoom;
         this.imgUrl = imgUrl;
+        this.list = list;
+
     }
 
     public String getIdRoom() {
@@ -29,43 +31,26 @@ public class Room {
         this.idRoom = idRoom;
     }
 
-    private List<Device> deviceList;
-        private String name;
-        private List<DHT> dhtList;
-        private List<OtherSensor> otherSensorList;
+    public String nameRoom;
 
 
+    public String getNameRoom() {
+        return nameRoom;
+    }
 
-        public String getName() {
-            return name;
-        }
+    public List<CheckDevice> getList() {
+        return list;
+    }
 
-        public void setName(String name) {
-            this.name = name;
-        }
+    public void setList(List<CheckDevice> list) {
+        this.list = list;
+    }
 
-        public List<Device> getDeviceList() {
-            return deviceList;
-        }
+    public List<CheckDevice> list;
 
-        public void setDeviceList(List<Device> deviceList) {
-            this.deviceList = deviceList;
-        }
+    public void setNameRoom(String nameRoom) {
+        this.nameRoom = nameRoom;
+    }
 
-        public List<DHT> getDhtList() {
-            return dhtList;
-        }
-
-        public void setDhtList(List<DHT> dhtList) {
-            this.dhtList = dhtList;
-        }
-
-        public List<OtherSensor> getOtherSensorList() {
-            return otherSensorList;
-        }
-
-        public void setOtherSensorList(List<OtherSensor> otherSensorList) {
-            this.otherSensorList = otherSensorList;
-        }
 
 }

@@ -5,13 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.example.remotehomeelectricalcontrolsystem.Adapter.FloorAdapter;
-import com.example.remotehomeelectricalcontrolsystem.Adapter.HomeAdatper;
-import com.example.remotehomeelectricalcontrolsystem.Model.Floor;
+
+
+import com.example.remotehomeelectricalcontrolsystem.Model.CheckDevice;
 import com.example.remotehomeelectricalcontrolsystem.Model.Room;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,6 +26,9 @@ public class FloorActivity1 extends AppCompatActivity {
     RecyclerView rec_room_floor1;
     FloorAdapter floorAdapter;
     List<Room> roomList;
+    List<CheckDevice> list;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +63,26 @@ public class FloorActivity1 extends AppCompatActivity {
                                 String idRoom = dataRoom.getKey();
                                 String nameRoom = dataRoom.child("name").getValue(String.class);
                                 String imgUrl = dataRoom.child("imgUrl").getValue(String.class);
+                                for(DataSnapshot dataDevice : dataRoom.child("devices").getChildren()){
+                                    String idDevice = dataDevice.getKey();
+                                    Long listCheck = dataRoom.child("devices").getChildrenCount();
+                                    list = new ArrayList<>();
+                                    for(int i = 0 ; i < listCheck ; i++){
+                                        String nameDevice = dataDevice.child("name").getValue(String.class);
+                                        int endTime = dataDevice.child("endTime").getValue(Integer.class);
+                                        int startTime = dataDevice.child("startTime").getValue(Integer.class);
+                                        int state = dataDevice.child("state").getValue(Integer.class);
+                                        list.add(new CheckDevice(endTime , nameDevice , startTime , state));
+                                    }
+
+                                    System.out.println("Check List " + list.size());
+                                }
+                                roomList.add(new Room(idRoom , nameRoom , imgUrl , list));
+                                floorAdapter.notifyDataSetChanged();
                                 //Log.i("URL IMAGE" , imgUrl);
                                 Log.i("CheckData" , idRoom + nameRoom);
-                                roomList.add(new Room(idRoom , nameRoom , imgUrl));
-                                floorAdapter.notifyDataSetChanged();
+                                //roomList.add(new Room(idRoom , nameRoom , imgUrl));
+                                //floorAdapter.notifyDataSetChanged();
                             }
                         }
 //                        else if (bundle.getString("Floor2").equals(idFloor)){

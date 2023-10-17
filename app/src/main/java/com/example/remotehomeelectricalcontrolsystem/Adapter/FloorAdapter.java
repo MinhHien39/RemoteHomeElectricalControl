@@ -40,7 +40,9 @@ public class FloorAdapter extends RecyclerView.Adapter<FloorAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull FloorAdapter.ViewHolder holder, int position) {
-        holder.txtNameRoom.setText(roomList.get(position).getName());
+        holder.txtNameRoom.setText(roomList.get(position).getNameRoom());
+        holder.txtCountRoom.setText(String.valueOf(roomList.get(position).getList().size()) + " " +"Device");
+        //Log.i("txtCount" , String.valueOf(roomList.get(position).getList().size()));
 
         String url = roomList.get(position).getImgUrl();
         Glide.with(holder.itemView.getContext())
@@ -50,6 +52,7 @@ public class FloorAdapter extends RecyclerView.Adapter<FloorAdapter.ViewHolder>{
             @Override
             public void onClick(View v) {
                 Log.i("Id Room " , String.valueOf(roomList.get(position).getIdRoom()));
+                Log.i("txtCount" , String.valueOf(roomList.get(position).getList().size()));
             }
         });
     }
@@ -64,12 +67,14 @@ public class FloorAdapter extends RecyclerView.Adapter<FloorAdapter.ViewHolder>{
         TextView txtNameRoom;
         TextView txtIdRoom;
         ImageView imgRoom;
+        TextView txtCountRoom;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtNameRoom = itemView.findViewById(R.id.txtNameRoom);
             txtIdRoom = itemView.findViewById(R.id.txtIdRoom);
 
             imgRoom = itemView.findViewById(R.id.imgRoom);
+            txtCountRoom = itemView.findViewById(R.id.txtCountRoom);
         }
     }
 }

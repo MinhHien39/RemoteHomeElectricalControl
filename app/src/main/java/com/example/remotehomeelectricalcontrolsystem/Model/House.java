@@ -45,51 +45,6 @@ public class House {
 
 
 }
-
-
-
-
-
-class Device {
-    private int endTime;
-    private String name;
-    private int startTime;
-    private int state;
-
-    // Getters and setters
-    public int getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(int endTime) {
-        this.endTime = endTime;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(int startTime) {
-        this.startTime = startTime;
-    }
-
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-}
-
 class DHT {
     private double humidity;
     private double temperature;

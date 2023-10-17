@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="155dp"
-    android:layout_height="210dp"
+    android:layout_height="230dp"
     android:layout_marginLeft="30dp"
     android:layout_marginTop="15dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -36,7 +36,7 @@
                 android:layout_marginLeft="5dp"
                 android:textSize="22dp"
                 android:id="@+id/txtNameRoom"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_below="@id/imgRoom"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -45,10 +45,21 @@
                 android:textColor="#706666"
                 android:textSize="22dp"
                 android:id="@+id/txtIdRoom"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_below="@id/imgRoom"
                 android:layout_marginLeft="5dp"
                 android:layout_toRightOf="@id/txtNameRoom"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Check"
+                android:textColor="#706666"
+                android:textSize="22dp"
+                android:id="@+id/txtCountRoom"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/txtNameRoom"
+                android:layout_marginLeft="5dp"
+                />
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
