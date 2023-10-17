@@ -59,11 +59,24 @@ public class FloorActivity1 extends AppCompatActivity {
                             for(DataSnapshot dataRoom : dataFloor.child("rooms").getChildren()){
                                 String idRoom = dataRoom.getKey();
                                 String nameRoom = dataRoom.child("name").getValue(String.class);
+                                String imgUrl = dataRoom.child("imgUrl").getValue(String.class);
+                                //Log.i("URL IMAGE" , imgUrl);
                                 Log.i("CheckData" , idRoom + nameRoom);
-                                roomList.add(new Room(idRoom , nameRoom));
+                                roomList.add(new Room(idRoom , nameRoom , imgUrl));
                                 floorAdapter.notifyDataSetChanged();
                             }
                         }
+//                        else if (bundle.getString("Floor2").equals(idFloor)){
+//                            for(DataSnapshot dataRoom : dataFloor.child("rooms").getChildren()){
+//                                String idRoom = dataRoom.getKey();
+//                                String nameRoom = dataRoom.child("name").getValue(String.class);
+//                                String imgUrl = dataRoom.child("imgUrl").getValue(String.class);
+//                                //Log.i("URL IMAGE" , imgUrl);
+//                                Log.i("CheckData" , idRoom + nameRoom);
+//                                roomList.add(new Room(idRoom , nameRoom , imgUrl));
+//                                floorAdapter.notifyDataSetChanged();
+//                            }
+//                        }
                     }
 //                    Log.i("houseId" , houseId);
 //                    Log.i("houseName" , houseName);

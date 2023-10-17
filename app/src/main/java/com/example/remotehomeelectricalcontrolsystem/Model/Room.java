@@ -5,10 +5,20 @@ import java.util.List;
 public class Room {
 
         private String idRoom;
+    private String imgUrl;
 
-    public Room(String idRoom, String name) {
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public Room(String idRoom, String name , String imgUrl) {
         this.idRoom = idRoom;
         this.name = name;
+        this.imgUrl = imgUrl;
     }
 
     public String getIdRoom() {

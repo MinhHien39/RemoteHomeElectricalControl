@@ -1,14 +1,17 @@
 package com.example.remotehomeelectricalcontrolsystem.Adapter;
 
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.remotehomeelectricalcontrolsystem.Model.Floor;
 import com.example.remotehomeelectricalcontrolsystem.Model.Room;
 import com.example.remotehomeelectricalcontrolsystem.R;
@@ -38,6 +41,17 @@ public class FloorAdapter extends RecyclerView.Adapter<FloorAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull FloorAdapter.ViewHolder holder, int position) {
         holder.txtNameRoom.setText(roomList.get(position).getName());
+
+        String url = roomList.get(position).getImgUrl();
+        Glide.with(holder.itemView.getContext())
+                .load(url)
+                .into(holder.imgRoom);
+        holder.imgRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("Id Room " , String.valueOf(roomList.get(position).getIdRoom()));
+            }
+        });
     }
 
     @Override
@@ -48,9 +62,14 @@ public class FloorAdapter extends RecyclerView.Adapter<FloorAdapter.ViewHolder>{
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView txtNameRoom;
+        TextView txtIdRoom;
+        ImageView imgRoom;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtNameRoom = itemView.findViewById(R.id.txtNameRoom);
+            txtIdRoom = itemView.findViewById(R.id.txtIdRoom);
+
+            imgRoom = itemView.findViewById(R.id.imgRoom);
         }
     }
 }

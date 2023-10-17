@@ -5,9 +5,10 @@ import java.util.List;
 public class Floor {
     public String id;
 
-    public Floor(String id, String name) {
+    public Floor(String id, String name ) {
         this.id = id;
         this.name = name;
+
     }
 
     public String getId() {

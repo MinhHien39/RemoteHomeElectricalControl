@@ -54,8 +54,9 @@ public class FloorActivity2 extends AppCompatActivity {
                             for(DataSnapshot dataRoom : dataFloor.child("rooms").getChildren()){
                                 String idRoom = dataRoom.getKey();
                                 String nameRoom = dataRoom.child("name").getValue(String.class);
+                                String imgUrl = dataRoom.child("imgUrl").getValue(String.class);
                                 Log.i("CheckData" , idRoom + nameRoom);
-                                roomList.add(new Room(idRoom , nameRoom));
+                                roomList.add(new Room(idRoom , nameRoom  , imgUrl));
                                 floorAdapter.notifyDataSetChanged();
                             }
                         }
