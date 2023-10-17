@@ -6,7 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -111,24 +114,13 @@ public class SignupActivity extends AppCompatActivity {
       String houseKey = edtHouseKey.getText().toString();
       String telephone = edtTelephone.getText().toString();
 
-      boolean allFieldsValid = true;
-      for (boolean isValid : isValidForm) {
-        if (!isValid) {
-          allFieldsValid = false;
-          break;
-        }
-      }
-      if (allFieldsValid) {
-        checkRegisteredAccount(email, telephone, houseKey);
-        if (checkAllFields(fullName, email, telephone, houseKey, password) && allFieldsValid) {
-          String encryptPass = EncryptionUtils.generateMD5(password);
-          String encryptHouseKey = EncryptionUtils.generateMD5(houseKey);
+      clearFocusFromInputField();
 
-          writeNewUser(uuid.randomUUID().toString(), fullName, email, telephone, encryptHouseKey, encryptPass);
-          moveScreen(SignupActivity.this, LoginActivity.class);
-        } else {
-          Toast.makeText(SignupActivity.this, "Please check your registration information again", Toast.LENGTH_LONG).show();
-        }
+      if (checkAllFields(fullName, email, telephone, houseKey, password)) {
+        checkRegisteredAccount(email, houseKey, fullName, telephone, password);
+        // Do not continue with the code here
+      } else {
+        Toast.makeText(SignupActivity.this, "Please check your registration information again", Toast.LENGTH_LONG).show();
       }
     });
 
@@ -202,7 +194,7 @@ public class SignupActivity extends AppCompatActivity {
     });
   }
 
-  public void checkRegisteredAccount(String emailToCheck, String telToCheck, String houseKeyToCheck) {
+  public void checkRegisteredAccount(String emailToCheck, String houseKeyToCheck, String fullName, String telephone, String password) {
     String encryptHouseKey = EncryptionUtils.generateMD5(houseKeyToCheck);
     usersRef.orderByChild("email").equalTo(emailToCheck).addListenerForSingleValueEvent(new ValueEventListener() {
       @Override
@@ -211,16 +203,22 @@ public class SignupActivity extends AppCompatActivity {
           for (DataSnapshot userSnapshot : snapshot.getChildren()) {
             String email = userSnapshot.child("email").getValue(String.class);
             String houseKey = userSnapshot.child("houseKey").getValue(String.class);
-            if (email.equals(emailToCheck) && houseKey.equals(houseKeyToCheck)) {
+            Log.d("aaa", email + houseKey);
+            if (email.equals(emailToCheck) && houseKey.equals(encryptHouseKey)) {
               Toast.makeText(SignupActivity.this, "Account already exists!", Toast.LENGTH_LONG).show();
               edtHouseKey.setText("");
               edtHouseKey.setError("Please re-enter another house key");
               isValidForm[3] = false;
+            } else {
+              isValidForm[3] = true;
+              // Continue with the registration
+              continueRegistration(fullName, emailToCheck, telephone, houseKeyToCheck, password);
             }
           }
-          // User with the given email already exists
         } else {
           isValidForm[3] = true;
+          // Continue with the registration
+          continueRegistration(fullName, emailToCheck, telephone, houseKeyToCheck, password);
         }
       }
 
@@ -231,15 +229,42 @@ public class SignupActivity extends AppCompatActivity {
     });
   }
 
+  private void continueRegistration(String fullName, String email, String telephone, String houseKey, String password) {
+    boolean allFieldsValid = true;
+    for (boolean isValid : isValidForm) {
+      Log.d("aaa", String.valueOf(isValid));
+      if (!isValid) {
+        allFieldsValid = false;
+        break;
+      }
+    }
+    if (allFieldsValid) {
+      Log.d("aaa", isValidForm.toString());
+      String encryptPass = EncryptionUtils.generateMD5(password);
+      String encryptHouseKey = EncryptionUtils.generateMD5(houseKey);
+
+      writeNewUser(uuid.randomUUID().toString(), fullName, email, telephone, encryptHouseKey, encryptPass);
+      moveScreen(SignupActivity.this, LoginActivity.class);
+    }
+  }
+
   public void writeNewUser(String id, String name, String email, String telephone, String houseKey, String password) {
     User user = new User(name, email, telephone, houseKey, password, role, houseId);
     usersRef.child(id).setValue(user);
     Toast.makeText(SignupActivity.this, "Successful account registration!", Toast.LENGTH_LONG).show();
+    user.setPassword(edtPassword.getText().toString());
     SharedUser.setUser(user);
   }
 
   public void moveScreen(Activity currentScreen, Class<? extends Activity> nextScreenClass) {
     Intent intent = new Intent(currentScreen, nextScreenClass);
     startActivity(intent);
+  }
+
+  private void clearFocusFromInputField() {
+    View currentFocus = getCurrentFocus();
+    if (currentFocus instanceof EditText) {
+      currentFocus.clearFocus();
+    }
   }
 }
