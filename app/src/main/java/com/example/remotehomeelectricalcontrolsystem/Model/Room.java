@@ -15,7 +15,7 @@ public class Room {
         this.imgUrl = imgUrl;
     }
 
-    public Room(String idRoom, String nameRoom , String imgUrl , List<CheckDevice> list) {
+    public Room(String idRoom, String nameRoom , String imgUrl , List<Devices> list) {
         this.idRoom = idRoom;
         this.nameRoom = nameRoom;
         this.imgUrl = imgUrl;
@@ -38,15 +38,15 @@ public class Room {
         return nameRoom;
     }
 
-    public List<CheckDevice> getList() {
+    public List<Devices> getList() {
         return list;
     }
 
-    public void setList(List<CheckDevice> list) {
+    public void setList(List<Devices> list) {
         this.list = list;
     }
 
-    public List<CheckDevice> list;
+    public List<Devices> list;
 
     public void setNameRoom(String nameRoom) {
         this.nameRoom = nameRoom;

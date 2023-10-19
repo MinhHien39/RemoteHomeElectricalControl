@@ -11,7 +11,7 @@ import android.util.Log;
 import com.example.remotehomeelectricalcontrolsystem.Adapter.FloorAdapter;
 
 
-import com.example.remotehomeelectricalcontrolsystem.Model.CheckDevice;
+import com.example.remotehomeelectricalcontrolsystem.Model.Devices;
 import com.example.remotehomeelectricalcontrolsystem.Model.Room;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,7 +26,7 @@ public class FloorActivity1 extends AppCompatActivity {
     RecyclerView rec_room_floor1;
     FloorAdapter floorAdapter;
     List<Room> roomList;
-    List<CheckDevice> list;
+    List<Devices> list;
 
 
 
@@ -72,7 +72,7 @@ public class FloorActivity1 extends AppCompatActivity {
                                         int endTime = dataDevice.child("endTime").getValue(Integer.class);
                                         int startTime = dataDevice.child("startTime").getValue(Integer.class);
                                         int state = dataDevice.child("state").getValue(Integer.class);
-                                        list.add(new CheckDevice(endTime , nameDevice , startTime , state));
+                                        list.add(new Devices(endTime , nameDevice , startTime , state));
                                     }
 
                                     System.out.println("Check List " + list.size());

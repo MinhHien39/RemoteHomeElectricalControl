@@ -1,6 +1,8 @@
 package com.example.remotehomeelectricalcontrolsystem.Adapter;
 
+import android.content.Intent;
 import android.media.Image;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.remotehomeelectricalcontrolsystem.Model.Floor;
 import com.example.remotehomeelectricalcontrolsystem.Model.Room;
 import com.example.remotehomeelectricalcontrolsystem.R;
+import com.example.remotehomeelectricalcontrolsystem.RoomActivity;
 
 import org.w3c.dom.Text;
 
@@ -53,6 +56,11 @@ public class FloorAdapter extends RecyclerView.Adapter<FloorAdapter.ViewHolder>{
             public void onClick(View v) {
                 Log.i("Id Room " , String.valueOf(roomList.get(position).getIdRoom()));
                 Log.i("txtCount" , String.valueOf(roomList.get(position).getList().size()));
+                Bundle bundle = new Bundle();
+                bundle.putString("keyRoom" , roomList.get(position).getIdRoom());
+                Intent intent = new Intent(v.getContext() , RoomActivity.class);
+                intent.putExtras(bundle);
+                v.getContext().startActivity(intent);
             }
         });
     }

@@ -1,12 +1,12 @@
 package com.example.remotehomeelectricalcontrolsystem.Model;
 
-public class CheckDevice {
+public class Devices {
     public int endTime;
     public String nameDevice;
     public int startTime;
     public int state;
 
-    public CheckDevice(int endTime, String nameDevice, int startTime, int state) {
+    public Devices(int endTime, String nameDevice, int startTime, int state) {
         this.endTime = endTime;
         this.nameDevice = nameDevice;
         this.startTime = startTime;
