@@ -5,12 +5,22 @@ public class Devices {
     public String nameDevice;
     public int startTime;
     public int state;
+    public String imgUrl;
 
-    public Devices(int endTime, String nameDevice, int startTime, int state) {
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public Devices(int endTime, String nameDevice, int startTime, int state , String imgUrl) {
         this.endTime = endTime;
         this.nameDevice = nameDevice;
         this.startTime = startTime;
         this.state = state;
+        this.imgUrl = imgUrl;
     }
 
     public int getEndTime() {

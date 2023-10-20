@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.remotehomeelectricalcontrolsystem.Adapter.FloorAdapter;
+import com.example.remotehomeelectricalcontrolsystem.Model.Devices;
 import com.example.remotehomeelectricalcontrolsystem.Model.Room;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +24,8 @@ public class FloorActivity2 extends AppCompatActivity {
     RecyclerView rec_room_floor2;
     FloorAdapter floorAdapter;
     List<Room> roomList;
+
+    List<Devices> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +53,30 @@ public class FloorActivity2 extends AppCompatActivity {
                         Log.i("keyFloor" , idFloor);
                         String idKeyFloor = bundle.getString("Floor2");
                         Log.i("keyBundle" , idKeyFloor);
-                        if (bundle.getString("Floor2").equals(idFloor)){
-                            for(DataSnapshot dataRoom : dataFloor.child("rooms").getChildren()){
+                        if (bundle.getString("Floor2").equals(idFloor)) {
+                            for (DataSnapshot dataRoom : dataFloor.child("rooms").getChildren()) {
                                 String idRoom = dataRoom.getKey();
                                 String nameRoom = dataRoom.child("name").getValue(String.class);
                                 String imgUrl = dataRoom.child("imgUrl").getValue(String.class);
-                                Log.i("CheckData" , idRoom + nameRoom);
-                                //roomList.add(new Room(idRoom , nameRoom  , imgUrl));
+                                for (DataSnapshot dataDevice : dataRoom.child("devices").getChildren()) {
+                                    String idDevice = dataDevice.getKey();
+                                    Long listCheck = dataRoom.child("devices").getChildrenCount();
+                                    list = new ArrayList<>();
+                                    for (int i = 0; i < listCheck; i++) {
+                                        String nameDevice = dataDevice.child("name").getValue(String.class);
+                                        int endTime = dataDevice.child("endTime").getValue(Integer.class);
+                                        int startTime = dataDevice.child("startTime").getValue(Integer.class);
+                                        int state = dataDevice.child("state").getValue(Integer.class);
+                                        String imgUrlDevice = dataDevice.child("imgUrl").getValue(String.class);
+                                        list.add(new Devices(endTime, nameDevice, startTime, state, imgUrlDevice));
+                                    }
+
+                                    System.out.println("Check List " + list.size());
+                                }
+                                roomList.add(new Room(idRoom, nameRoom, imgUrl, list));
                                 floorAdapter.notifyDataSetChanged();
+                                //Log.i("URL IMAGE" , imgUrl);
+                                Log.i("CheckData", idRoom + nameRoom);
                             }
                         }
                     }

@@ -72,30 +72,20 @@ public class FloorActivity1 extends AppCompatActivity {
                                         int endTime = dataDevice.child("endTime").getValue(Integer.class);
                                         int startTime = dataDevice.child("startTime").getValue(Integer.class);
                                         int state = dataDevice.child("state").getValue(Integer.class);
-                                        list.add(new Devices(endTime , nameDevice , startTime , state));
+                                        String imgUrlDevice= dataDevice.child("imgUrl").getValue(String.class);
+                                        list.add(new Devices(endTime , nameDevice , startTime , state , imgUrlDevice));
                                     }
 
                                     System.out.println("Check List " + list.size());
                                 }
                                 roomList.add(new Room(idRoom , nameRoom , imgUrl , list));
                                 floorAdapter.notifyDataSetChanged();
-                                //Log.i("URL IMAGE" , imgUrl);
+
                                 Log.i("CheckData" , idRoom + nameRoom);
-                                //roomList.add(new Room(idRoom , nameRoom , imgUrl));
-                                //floorAdapter.notifyDataSetChanged();
+
                             }
                         }
-//                        else if (bundle.getString("Floor2").equals(idFloor)){
-//                            for(DataSnapshot dataRoom : dataFloor.child("rooms").getChildren()){
-//                                String idRoom = dataRoom.getKey();
-//                                String nameRoom = dataRoom.child("name").getValue(String.class);
-//                                String imgUrl = dataRoom.child("imgUrl").getValue(String.class);
-//                                //Log.i("URL IMAGE" , imgUrl);
-//                                Log.i("CheckData" , idRoom + nameRoom);
-//                                roomList.add(new Room(idRoom , nameRoom , imgUrl));
-//                                floorAdapter.notifyDataSetChanged();
-//                            }
-//                        }
+
                     }
 //                    Log.i("houseId" , houseId);
 //                    Log.i("houseName" , houseName);

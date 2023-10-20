@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.remotehomeelectricalcontrolsystem.Model.Devices;
 import com.example.remotehomeelectricalcontrolsystem.R;
 
@@ -31,7 +32,10 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RoomAdapter.ViewHolder holder, int position) {
         holder.txtNameDevice.setText(devicesList.get(position).getNameDevice());
-
+        String url = devicesList.get(position).getImgUrl();
+        Glide.with(holder.itemView.getContext())
+                .load(url)
+                .into(holder.imgDevice);
     }
 
     @Override
@@ -46,6 +50,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtNameDevice = itemView.findViewById(R.id.txtNameDevice);
+            imgDevice = itemView.findViewById(R.id.imgDevice);
         }
     }
 }

@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,6 +48,14 @@ public class FloorAdapter extends RecyclerView.Adapter<FloorAdapter.ViewHolder>{
         holder.txtNameRoom.setText(roomList.get(position).getNameRoom());
         holder.txtCountRoom.setText(String.valueOf(roomList.get(position).getList().size()) + " " +"Device");
         //Log.i("txtCount" , String.valueOf(roomList.get(position).getList().size()));
+        holder.aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    
+                }
+            }
+        });
 
         String url = roomList.get(position).getImgUrl();
         Glide.with(holder.itemView.getContext())
@@ -76,6 +86,7 @@ public class FloorAdapter extends RecyclerView.Adapter<FloorAdapter.ViewHolder>{
         TextView txtIdRoom;
         ImageView imgRoom;
         TextView txtCountRoom;
+        Switch aSwitch;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtNameRoom = itemView.findViewById(R.id.txtNameRoom);
@@ -83,6 +94,7 @@ public class FloorAdapter extends RecyclerView.Adapter<FloorAdapter.ViewHolder>{
 
             imgRoom = itemView.findViewById(R.id.imgRoom);
             txtCountRoom = itemView.findViewById(R.id.txtCountRoom);
+            aSwitch = itemView.findViewById(R.id.sw);
         }
     }
 }
