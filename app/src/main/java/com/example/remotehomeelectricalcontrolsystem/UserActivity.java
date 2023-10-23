@@ -8,19 +8,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.remotehomeelectricalcontrolsystem.Model.SharedUser;
+import com.example.remotehomeelectricalcontrolsystem.Model.User;
 import com.example.remotehomeelectricalcontrolsystem.Model.UserHouse;
 import com.example.remotehomeelectricalcontrolsystem.Utils.EncryptionUtils;
 import com.example.remotehomeelectricalcontrolsystem.Utils.Format;
 import com.example.remotehomeelectricalcontrolsystem.Utils.InputValidator;
-import com.example.remotehomeelectricalcontrolsystem.Model.User;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,24 +31,32 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.UUID;
 
-public class SignupActivity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity {
   private FirebaseDatabase db;
   private DatabaseReference usersRef, housesRef, usersHousesRef;
-  TextInputEditText edtName, edtEmail, edtTelephone, edtHouseKey, edtPassword;
-  TextInputLayout layoutName, layoutEmail, layoutTelephone, layoutHouseKey, layoutPassword;
-  TextView txtLogin;
-  Button btnSignUp;
-//  UUID uuid;
+  LinearLayout linearUpdateDelete, linearSubmit;
+  TextInputEditText edtName, edtEmail, edtTel, edtHouseKey, edtPassword;
+  Button btnAdd;
+  AutoCompleteTextView autoCompleteRole;
+  String[] roles = new String[]{"admin", "host", "member"};
+  ArrayAdapter<String> adapterRoles;
   String role, houseId;
   boolean[] isValidForm = {false, false, false, false, false};
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_signup);
+    setContentView(R.layout.activity_user);
 
     init();
 
+    Bundle bundle = getIntent().getExtras();
+
+    if (bundle != null) {
+      String userId = bundle.getString("userId");
+      showUpdateDelete();
+    } else {
+      showSubmit();
+    }
     edtName.setOnFocusChangeListener((view, hasFocus) -> {
       if (!hasFocus) {
         String name = edtName.getText().toString();
@@ -75,15 +85,15 @@ public class SignupActivity extends AppCompatActivity {
       }
     });
 
-    edtTelephone.setOnFocusChangeListener((view, hasFocus) -> {
+    edtTel.setOnFocusChangeListener((view, hasFocus) -> {
       if (!hasFocus) {
-        String tel = edtTelephone.getText().toString();
+        String tel = edtTel.getText().toString();
         String telError = InputValidator.isValidPhoneNumber(tel);
         if (telError != null) {
-          edtTelephone.setError(telError);
+          edtTel.setError(telError);
           isValidForm[2] = false;
         } else {
-          edtTelephone.setError(null);
+          edtTel.setError(null);
           isValidForm[2] = true;
         }
       }
@@ -109,12 +119,26 @@ public class SignupActivity extends AppCompatActivity {
       }
     });
 
-    btnSignUp.setOnClickListener(v -> {
+//    autoCompleteRole.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//      @Override
+//      public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//        String valueSelected = adapterView.getItemAtPosition(i).toString();
+//        Toast.makeText(UserActivity.this, "lsadkjflksad", Toast.LENGTH_SHORT).show();
+//      }
+//
+//      @Override
+//      public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//      }
+//    });
+
+    btnAdd.setOnClickListener(v -> {
       String email = edtEmail.getText().toString();
       String password = edtPassword.getText().toString();
       String fullName = edtName.getText().toString();
       String houseKey = edtHouseKey.getText().toString();
-      String telephone = edtTelephone.getText().toString();
+      String telephone = edtTel.getText().toString();
+      role = autoCompleteRole.getText().toString();
 
       clearFocusFromInputField();
 
@@ -122,14 +146,18 @@ public class SignupActivity extends AppCompatActivity {
         checkRegisteredAccount(email, houseKey, fullName, telephone, password);
         // Do not continue with the code here
       } else {
-        Toast.makeText(SignupActivity.this, "Please check your registration information again", Toast.LENGTH_LONG).show();
+        Toast.makeText(UserActivity.this, "Please check your registration information again", Toast.LENGTH_LONG).show();
       }
     });
 
-    txtLogin.setOnClickListener(v -> {
-      Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-      startActivity(intent);
-    });
+  }
+
+  public void showUpdateDelete() {
+    linearUpdateDelete.setVisibility(View.VISIBLE);
+  }
+
+  public void showSubmit() {
+    linearSubmit.setVisibility(View.VISIBLE);
   }
 
   public void init() {
@@ -137,14 +165,19 @@ public class SignupActivity extends AppCompatActivity {
     edtEmail = findViewById(R.id.edtEmail);
     edtPassword = findViewById(R.id.edtPassword);
     edtHouseKey = findViewById(R.id.edtHouseKey);
-    layoutHouseKey = findViewById(R.id.layoutHouseKey);
-    edtTelephone = findViewById(R.id.edtTelephone);
-    txtLogin = findViewById(R.id.txtLogin);
-    btnSignUp = findViewById(R.id.btnSignUp);
+    edtTel = findViewById(R.id.edtTel);
+    btnAdd = findViewById(R.id.btnAdd);
     db = FirebaseDatabase.getInstance();
     usersRef = db.getReference("users");
     housesRef = db.getReference("test1");
     usersHousesRef = db.getReference("usersHouses");
+    linearUpdateDelete = findViewById(R.id.linearUpdateDelete);
+    linearSubmit = findViewById(R.id.linearSubmit);
+    autoCompleteRole = findViewById(R.id.autoCompleteRole);
+    adapterRoles = new ArrayAdapter<String>(this, R.layout.list_item, roles);
+    autoCompleteRole.setAdapter(adapterRoles);
+    autoCompleteRole.setText(adapterRoles.getItem(2), false);
+
   }
 
   public boolean checkAllFields(String name, String email, String telephone, String houseKey, String password) {
@@ -155,7 +188,7 @@ public class SignupActivity extends AppCompatActivity {
         allFieldsValid = false;
         if (i == 0) edtName.setError("This field is required");
         else if (i == 1) edtEmail.setError("This field is required");
-        else if (i == 2) edtTelephone.setError("This field is required");
+        else if (i == 2) edtTel.setError("This field is required");
         else if (i == 3) edtHouseKey.setError("This field is required");
         else edtPassword.setError("This field is required");
       }
@@ -169,17 +202,12 @@ public class SignupActivity extends AppCompatActivity {
     housesRef.addValueEventListener(new ValueEventListener() {
       @Override
       public void onDataChange(@NonNull DataSnapshot snapshot) {
-        String emailHost = null;
         boolean isExist = false;
         for (DataSnapshot houseSnapshot : snapshot.getChildren()) {
           String houseKey = houseSnapshot.child("houseKey").getValue(String.class);
           if (houseKey.equals(encryptHouseKey)) {
             houseId = houseSnapshot.getKey();
-            emailHost = houseSnapshot.child("emailHost").getValue(String.class);
-            String email = edtEmail.getText().toString();
             isExist = true;
-
-            role = emailHost.equals(email) ? "host" : "member";
             break;
           }
         }
@@ -222,7 +250,7 @@ public class SignupActivity extends AppCompatActivity {
                             String userIdToCheck = userHouseSnapshot.child("userId").getValue(String.class).toString();
                             String houseIdToCheck = userHouseSnapshot.child("houseId").getValue(String.class).toString();
                             if (userIdToCheck.equals(userId) && houseIdToCheck.equals(houseId)) {
-                              Toast.makeText(SignupActivity.this, "Account already exists!", Toast.LENGTH_LONG).show();
+                              Toast.makeText(UserActivity.this, "Account already exists!", Toast.LENGTH_LONG).show();
                               edtHouseKey.setText("");
                               edtHouseKey.setError("Please re-enter another house key");
                               isValidForm[3] = false;
@@ -286,7 +314,7 @@ public class SignupActivity extends AppCompatActivity {
       }
       Log.d("aaa", "continueRegistration()");
       writeNewUserHouse(userId, fullName, email, telephone);
-      moveScreen(SignupActivity.this, LoginActivity.class);
+      moveScreen(UserActivity.this, AdminActivity.class);
     }
   }
 
@@ -299,7 +327,7 @@ public class SignupActivity extends AppCompatActivity {
   public void writeNewUserHouse(String userId, String name, String email, String telephone) {
     UserHouse userHouse = new UserHouse(userId, houseId, role);
     usersHousesRef.child(UUID.randomUUID().toString()).setValue(userHouse);
-    Toast.makeText(SignupActivity.this, "Successful account registration!", Toast.LENGTH_LONG).show();
+    Toast.makeText(UserActivity.this, "User added successfully!", Toast.LENGTH_LONG).show();
     String password = edtPassword.getText().toString();
     User user = new User(userId, name, email, telephone, password);
     SharedUser.setUser(user);

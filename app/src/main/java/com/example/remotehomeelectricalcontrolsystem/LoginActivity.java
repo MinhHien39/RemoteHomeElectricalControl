@@ -137,22 +137,21 @@ public class LoginActivity extends AppCompatActivity {
 
   public void isUserExist(String emailToCheck, String passwordToCheck) {
     btnLogin.setEnabled(false);
-    String encryptPass = EncryptionUtils.generateMD5(passwordToCheck);
+    String encryptPass = EncryptionUtils.encrypt(passwordToCheck);
     usersRef.orderByChild("email").equalTo(emailToCheck).addListenerForSingleValueEvent(new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
         if (dataSnapshot.exists()) {
           // User with the given email exists
           for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+            String userId = userSnapshot.getKey();
             String name = userSnapshot.child("name").getValue(String.class);
             String email = userSnapshot.child("email").getValue(String.class);
             String password = userSnapshot.child("password").getValue(String.class);
-            String role = userSnapshot.child("role").getValue(String.class);
-            String houseId = userSnapshot.child("houseId").getValue(String.class);
             if (!password.equals(encryptPass)) {
               Toast.makeText(LoginActivity.this, "Email or password is incorrect", Toast.LENGTH_LONG).show();
             } else {
-              user = new User(name, email, "", "", "", role, houseId);
+              user = new User(userId, name, email, "", "");
               Log.d("aaa", user.toString());
               if (cbRememberMe.isChecked()) {
                 saveCredentials(email, passwordToCheck);
