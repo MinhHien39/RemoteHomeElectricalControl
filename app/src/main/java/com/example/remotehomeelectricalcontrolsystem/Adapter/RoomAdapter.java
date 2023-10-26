@@ -65,14 +65,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("test1/floors/rooms/devices/state");
-        holder.aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    
-                }
-            }
-        });
+
     }
 
     @Override
@@ -89,7 +82,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
             super(itemView);
             txtNameDevice = itemView.findViewById(R.id.txtNameDevice);
             imgDevice = itemView.findViewById(R.id.imgDevice);
-            aSwitch = itemView.findViewById(R.id.sw);
+
         }
     }
 }
