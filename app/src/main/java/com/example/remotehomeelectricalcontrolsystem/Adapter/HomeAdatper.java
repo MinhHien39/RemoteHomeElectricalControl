@@ -84,10 +84,10 @@ public class HomeAdatper extends RecyclerView.Adapter<HomeAdatper.ViewHolder> {
                         intent1.putExtras(bundle);
                         view.getContext().startActivity(intent1);
                         break;
-                    case "b93700fb-e94a-4f2f-825c-b37163786597":
+                    case "40b38a85-36ea-4a72-921a-2fbb579a2daf":
                         Log.i("Change Floor2" , "Ok");
                         Intent intent2 = new Intent(view.getContext(), FloorActivity2.class);
-                        bundle.putString("Floor2" ,"b93700fb-e94a-4f2f-825c-b37163786597");
+                        bundle.putString("Floor2" ,"40b38a85-36ea-4a72-921a-2fbb579a2daf");
                         intent2.putExtras(bundle);
                         view.getContext().startActivity(intent2);
                         break;

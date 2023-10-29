@@ -53,32 +53,34 @@ public class FloorActivity2 extends AppCompatActivity {
                         Log.i("keyFloor" , idFloor);
                         String idKeyFloor = bundle.getString("Floor2");
                         Log.i("keyBundle" , idKeyFloor);
-                        if (bundle.getString("Floor2").equals(idFloor)) {
-                            for (DataSnapshot dataRoom : dataFloor.child("rooms").getChildren()) {
+                        if (bundle.getString("Floor2").equals(idFloor)){
+                            for(DataSnapshot dataRoom : dataFloor.child("rooms").getChildren()){
                                 String idRoom = dataRoom.getKey();
                                 String nameRoom = dataRoom.child("name").getValue(String.class);
                                 String imgUrl = dataRoom.child("imgUrl").getValue(String.class);
-                                for (DataSnapshot dataDevice : dataRoom.child("devices").getChildren()) {
+                                for(DataSnapshot dataDevice : dataRoom.child("devices").getChildren()){
                                     String idDevice = dataDevice.getKey();
                                     Long listCheck = dataRoom.child("devices").getChildrenCount();
                                     list = new ArrayList<>();
-                                    for (int i = 0; i < listCheck; i++) {
+                                    for(int i = 0 ; i < listCheck ; i++){
                                         String nameDevice = dataDevice.child("name").getValue(String.class);
                                         int endTime = dataDevice.child("endTime").getValue(Integer.class);
                                         int startTime = dataDevice.child("startTime").getValue(Integer.class);
                                         int state = dataDevice.child("state").getValue(Integer.class);
-                                        String imgUrlDevice = dataDevice.child("imgUrl").getValue(String.class);
-                                        list.add(new Devices(endTime, nameDevice, startTime, state, imgUrlDevice));
+                                        String imgUrlDevice= dataDevice.child("imgUrl").getValue(String.class);
+                                        list.add(new Devices(endTime , nameDevice , startTime , state , imgUrlDevice));
                                     }
 
                                     System.out.println("Check List " + list.size());
                                 }
-                                roomList.add(new Room(idRoom, nameRoom, imgUrl, list));
+                                roomList.add(new Room(idRoom , nameRoom , imgUrl , list));
                                 floorAdapter.notifyDataSetChanged();
-                                //Log.i("URL IMAGE" , imgUrl);
-                                Log.i("CheckData", idRoom + nameRoom);
+
+                                Log.i("CheckData" , idRoom + nameRoom);
+
                             }
                         }
+
                     }
 //                    Log.i("houseId" , houseId);
 //                    Log.i("houseName" , houseName);
