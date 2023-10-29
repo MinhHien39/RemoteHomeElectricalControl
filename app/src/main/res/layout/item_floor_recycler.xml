@@ -2,23 +2,22 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="155dp"
     android:layout_height="210dp"
-    android:layout_margin="15dp"
+    android:layout_margin="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardCornerRadius="22dp"
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:cardBackgroundColor="#F4F7FB"
+        android:clickable="true"
         >
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/rounded_imagebuttonfloor"
             >
             <ImageView
                 android:layout_width="wrap_content"
@@ -32,10 +31,11 @@
                 android:layout_height="wrap_content"
                 android:text="Floor"
                 android:textColor="#706666"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="10dp"
                 android:textSize="22dp"
                 android:id="@+id/txtNameFloor"
                 android:layout_marginTop="20dp"
+                android:paddingBottom="10dp"
                 android:layout_below="@id/imgFloor"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -46,10 +46,10 @@
                 android:id="@+id/txtIdFloor"
                 android:layout_marginTop="20dp"
                 android:layout_below="@id/imgFloor"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@id/txtNameFloor"/>
         </RelativeLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

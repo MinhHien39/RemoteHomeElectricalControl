@@ -40,33 +40,37 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RoomAdapter.ViewHolder holder, int position) {
         holder.txtNameDevice.setText(devicesList.get(position).getNameDevice());
-        String url;
-
-        switch (devicesList.get(position).getNameDevice()){
-            case "Fan" :
-                url = "https://quattrantamanh.com/wp-content/uploads/2022/03/1330..jpg";
-                Glide.with(holder.itemView.getContext())
-                        .load(url)
-                        .into(holder.imgDevice);
-                break;
-            case "Light 1":
-                url = "https://bizweb.dktcdn.net/100/116/589/products/led-bulb-day-toc-rang-dong.png?v=1617004880860";
-                Glide.with(holder.itemView.getContext())
-                        .load(url)
-                        .into(holder.imgDevice);
-                break;
-            case "Light 2":
-                String url1= "https://bizweb.dktcdn.net/100/116/589/products/led-bulb-day-toc-rang-dong.png?v=1617004880860";
-                Glide.with(holder.itemView.getContext())
-                        .load(url1)
-                        .into(holder.imgDevice);
-                break;
+        String url = null;
+        if (devicesList.get(position).getNameDevice().contains("Fan")) {
+            url = "https://quattrantamanh.com/wp-content/uploads/2022/03/1330..jpg";
+        } else if (devicesList.get(position).getNameDevice().contains("Light")) {
+            url = "https://bizweb.dktcdn.net/100/116/589/products/led-bulb-day-toc-rang-dong.png?v=1617004880860";
         }
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("test1/floors/rooms/devices/state");
-
+        Glide.with(holder.itemView.getContext())
+            .load(url)
+            .into(holder.imgDevice);
+//        switch (devicesList.get(position).getNameDevice()){
+//            case "Fan" :
+//                url = "https://quattrantamanh.com/wp-content/uploads/2022/03/1330..jpg";
+//                Glide.with(holder.itemView.getContext())
+//                        .load(url)
+//                        .into(holder.imgDevice);
+//                break;
+//            case "Light 1":
+//                url = "https://bizweb.dktcdn.net/100/116/589/products/led-bulb-day-toc-rang-dong.png?v=1617004880860";
+//                Glide.with(holder.itemView.getContext())
+//                        .load(url)
+//                        .into(holder.imgDevice);
+//                break;
+//            case "Light 2":
+//                String url1= "https://bizweb.dktcdn.net/100/116/589/products/led-bulb-day-toc-rang-dong.png?v=1617004880860";
+//                Glide.with(holder.itemView.getContext())
+//                        .load(url1)
+//                        .into(holder.imgDevice);
+//                break;
+//        }
     }
+
 
     @Override
     public int getItemCount() {
@@ -82,7 +86,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
             super(itemView);
             txtNameDevice = itemView.findViewById(R.id.txtNameDevice);
             imgDevice = itemView.findViewById(R.id.imgDevice);
-
         }
     }
 }
