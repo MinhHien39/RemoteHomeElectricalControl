@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
   private FirebaseDatabase db;
   private DatabaseReference usersRef, housesRef, usersHousesRef;
   FrameLayout frameLayout;
-  Fragment homeFragment = new HomeFragment();
+  Fragment homeFragment;
 
   BottomNavigationView bottomNavigationView;
 
@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
             if (role.equals("admin")) {
               Intent intent = new Intent(MainActivity.this, AdminActivity.class);
               startActivity(intent);
+              finish();
+            } else {
+              initViews(savedInstanceState, houseId);
             }
           }
         }
@@ -66,13 +69,23 @@ public class MainActivity extends AppCompatActivity {
       startActivity(intent);
       finish();
     }
+  }
 
+  public void init() {
+    db = FirebaseDatabase.getInstance();
+    usersHousesRef = db.getReference("usersHouses");
+    homeFragment = HomeFragment.newInstance();
+  }
+
+  public void initViews(Bundle savedInstanceState, String houseId) {
     bottomNavigationView = findViewById(R.id.bottomNavigationView);
     if (savedInstanceState == null) {
       getSupportFragmentManager().beginTransaction().setReorderingAllowed(true).replace(R.id.frame_layout,
           HomeFragment.class, null).commit();
     }
-
+    Bundle bundle = new Bundle();
+    bundle.putString("houseId", houseId);
+    homeFragment.setArguments(bundle);
     getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, homeFragment).commit();
 
 
@@ -88,10 +101,5 @@ public class MainActivity extends AppCompatActivity {
         return true;
       }
     });
-  }
-
-  public void init() {
-    db = FirebaseDatabase.getInstance();
-    usersHousesRef = db.getReference("usersHouses");
   }
 }

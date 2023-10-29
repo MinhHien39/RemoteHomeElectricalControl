@@ -158,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
               } else {
                 clearCredentials();
               }
-              Toast.makeText(LoginActivity.this, "Successful login", Toast.LENGTH_LONG).show();
+              Toast.makeText(LoginActivity.this, "Successful login", Toast.LENGTH_SHORT).show();
               moveScreen(LoginActivity.this, MainActivity.class, user);
             }
           }
