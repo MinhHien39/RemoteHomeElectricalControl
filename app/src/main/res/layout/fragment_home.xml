@@ -47,68 +47,79 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtHome"
                 >
-                <RelativeLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/recDHT"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/rounded_cardview">
+
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Temperature  "
-                        android:textSize="30dp"
-                        android:textColor="#FFFFFF"
                         android:id="@+id/txtTemp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginLeft="20dp"/>
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Temperature  "
+                        android:textColor="#FFFFFF"
+                        android:textSize="30dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="80dp"
-                        android:layout_marginTop="10dp"
                         android:id="@+id/txtSetTemp"
-                        android:textColor="#FFFFFF"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_toRightOf="@+id/recDHT"
                         android:text="-10°"
-                        android:textSize="30dp"
-                        android:layout_toRightOf="@+id/txtTemp"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Humidity  "
-                        android:textSize="30dp"
                         android:textColor="#FFFFFF"
+                        android:textSize="30dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
                         android:id="@+id/txtHumi"
-                        android:layout_below="@id/txtTemp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginLeft="20dp"/>
-
-                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="80dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/txtTemp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="32dp"
+                        android:text="Humidity  "
                         android:textColor="#FFFFFF"
-
-                        android:id="@+id/txtSetHumi"
-                        android:text="69"
                         android:textSize="30dp"
-                        android:layout_toRightOf="@+id/txtTemp"
-                        android:layout_below="@id/txtSetTemp"/>
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txtTemp" />
 
-                </RelativeLayout>
+                    <TextView
+                        android:id="@+id/txtSetHumi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txtSetTemp"
+
+                        android:layout_marginTop="32dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_toRightOf="@+id/txtTemp"
+                        android:text="69%"
+                        android:textColor="#FFFFFF"
+                        android:textSize="30dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txtSetTemp" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/rec_floor"
-                    android:layout_marginTop="50dp"
-                    app:layout_constraintTop_toBottomOf="@id/cardViewDHT"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rec_floor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardViewDHT"
+                app:layout_constraintVertical_bias="0.0" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

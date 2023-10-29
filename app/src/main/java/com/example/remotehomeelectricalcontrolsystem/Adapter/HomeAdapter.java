@@ -1,7 +1,6 @@
 package com.example.remotehomeelectricalcontrolsystem.Adapter;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,20 +11,29 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.remotehomeelectricalcontrolsystem.FloorActivity1;
-import com.example.remotehomeelectricalcontrolsystem.FloorActivity2;
+import com.example.remotehomeelectricalcontrolsystem.FloorActivity;
 
 import com.example.remotehomeelectricalcontrolsystem.Model.Floor;
-import com.example.remotehomeelectricalcontrolsystem.Model.House;
 import com.example.remotehomeelectricalcontrolsystem.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeAdatper extends RecyclerView.Adapter<HomeAdatper.ViewHolder> {
+public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     List<Floor> listFloor = new ArrayList<>();
-    public HomeAdatper() {
+    private String housePath;
+
+    public HomeAdapter() {
     }
+
+    public String getHousePath() {
+        return housePath;
+    }
+
+    public void setHousePath(String housePath) {
+        this.housePath = housePath;
+    }
+
     public void updateListFloor(List<Floor> list) {
         this.listFloor = list;
         Log.d("Success Adapter" , "Have Data In Adapter");
@@ -36,12 +44,12 @@ public class HomeAdatper extends RecyclerView.Adapter<HomeAdatper.ViewHolder> {
 
     @NonNull
     @Override
-    public HomeAdatper.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HomeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_floor_recycler , parent , false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HomeAdatper.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull HomeAdapter.ViewHolder holder, int position) {
         holder.txtNameFloor.setText(listFloor.get(position).getName());
         //holder.txtIdFloor.setText(listFloor.get(position).getId());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -68,9 +76,9 @@ public class HomeAdatper extends RecyclerView.Adapter<HomeAdatper.ViewHolder> {
             }
         });
         holder.imgFloor.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
+<<<<<<< HEAD:app/src/main/java/com/example/remotehomeelectricalcontrolsystem/Adapter/HomeAdatper.java
 
                 //int id = holder.getAdapterPosition();
                 String idFloor = (listFloor.get(position).getId());
@@ -92,6 +100,12 @@ public class HomeAdatper extends RecyclerView.Adapter<HomeAdatper.ViewHolder> {
                         view.getContext().startActivity(intent2);
                         break;
                 }
+=======
+                String floorId = (listFloor.get(position).getId());
+                Intent intent = new Intent(view.getContext() , FloorActivity.class);
+                intent.putExtra("floorPath", housePath + "/floors/" + floorId);
+                view.getContext().startActivity(intent);
+>>>>>>> d642809 (C6.4 Update Code V1.3):app/src/main/java/com/example/remotehomeelectricalcontrolsystem/Adapter/HomeAdapter.java
             }
         });
     }

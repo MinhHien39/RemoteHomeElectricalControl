@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -21,16 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RoomActivity extends AppCompatActivity {
-    List<Devices> deviceList;
-    RoomAdapter adapter;
-    RecyclerView rec_device;
-    TextView txtHumidity;
-    TextView txtTemperature;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_room);
+  List<Devices> deviceList;
+  RoomAdapter adapter;
+  RecyclerView rec_device;
+  TextView txtHumidity;
+  TextView txtTemperature;
 
+<<<<<<< HEAD
         Bundle bundle = getIntent().getExtras();
         rec_device = findViewById(R.id.rec_room);
         deviceList = new ArrayList<>();
@@ -123,5 +121,58 @@ public class RoomActivity extends AppCompatActivity {
         });
         adapter.updateDeviceList(deviceList);
         rec_device.setAdapter(adapter);
+=======
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_room);
+    Intent intent = getIntent();
+    if (intent != null) {
+      String roomPath = intent.getStringExtra("roomPath");
+      Log.d("aaa", "roomPath" + roomPath);
+      getDevices(roomPath);
+>>>>>>> d642809 (C6.4 Update Code V1.3)
     }
+  }
+
+  public void getDevices(String roomPath) {
+    rec_device = findViewById(R.id.rec_room);
+    deviceList = new ArrayList<>();
+    adapter = new RoomAdapter();
+    //txtHumidity = findViewById(R.id.txtHumidity);
+    txtTemperature = findViewById(R.id.txtTemperature);
+
+    rec_device.setLayoutManager(new GridLayoutManager(this, 2));
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference roomRef = database.getReference(roomPath);
+
+    adapter.updateDeviceList(deviceList);
+    rec_device.setAdapter(adapter);
+    roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+      @Override
+      public void onDataChange(@NonNull DataSnapshot snapshot) {
+        String roomName = snapshot.child("name").getValue(String.class);
+        Log.d("aaa", "room name: " + roomName);
+        for (DataSnapshot device : snapshot.child("devices").getChildren()) {
+          String deviceId = device.getKey();
+          String nameDevice = device.child("name").getValue(String.class);
+          int endTime = device.child("endTime").getValue(Integer.class);
+          int startTime = device.child("startTime").getValue(Integer.class);
+          int state = device.child("state").getValue(Integer.class);
+          Log.i("Check If", "Ok");
+          deviceList.add(new Devices(endTime, nameDevice, startTime, state, null));
+        }
+        updateDeviceView();
+      }
+
+      @Override
+      public void onCancelled(@NonNull DatabaseError error) {
+      }
+    });
+  }
+
+  public void updateDeviceView() {
+    adapter.updateDeviceList(deviceList);
+    adapter.notifyDataSetChanged();
+  }
 }

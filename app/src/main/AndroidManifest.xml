@@ -24,10 +24,7 @@
             android:name=".RoomActivity"
             android:exported="true" />
         <activity
-            android:name=".FloorActivity2"
-            android:exported="true" />
-        <activity
-            android:name=".FloorActivity1"
+            android:name=".FloorActivity"
             android:exported="true" />
         <activity
             android:name=".MainActivity"
