@@ -1,6 +1,7 @@
 package com.example.remotehomeelectricalcontrolsystem.Adapter;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,10 +79,34 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         holder.imgFloor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+                //int id = holder.getAdapterPosition();
+                String idFloor = (listFloor.get(position).getId());
+                Bundle bundle = new Bundle();
+                //Intent intent = new Intent(view.getContext() , FloorActivity1.class);
+//                switch (idFloor) {
+//                    case "e72cf36f-f9c5-4dee-b11a-951c0e3dc638":
+//                        Log.i("Change Floor1" , "Ok");
+//                        Intent intent1 = new Intent(view.getContext(), FloorActivity.class);
+//                        bundle.putString("Floor1" ,"e72cf36f-f9c5-4dee-b11a-951c0e3dc638");
+//                        intent1.putExtras(bundle);
+//                        view.getContext().startActivity(intent1);
+//                        break;
+//                    case "40b38a85-36ea-4a72-921a-2fbb579a2daf":
+//                        Log.i("Change Floor2" , "Ok");
+//                        Intent intent2 = new Intent(view.getContext(), FloorActivity2.class);
+//                        bundle.putString("Floor2" ,"40b38a85-36ea-4a72-921a-2fbb579a2daf");
+//                        intent2.putExtras(bundle);
+//                        view.getContext().startActivity(intent2);
+//                        break;
+//                }
+
                 String floorId = (listFloor.get(position).getId());
                 Intent intent = new Intent(view.getContext() , FloorActivity.class);
                 intent.putExtra("floorPath", housePath + "/floors/" + floorId);
                 view.getContext().startActivity(intent);
+
             }
         });
     }
