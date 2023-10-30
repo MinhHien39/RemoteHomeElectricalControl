@@ -22,14 +22,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RoomActivity extends AppCompatActivity {
-  List<Devices> deviceList;
-  RoomAdapter adapter;
-  RecyclerView rec_device;
-  TextView txtHumidity;
-  TextView txtTemperature;
+    List<Devices> deviceList;
+    RoomAdapter adapter;
+    RecyclerView rec_device;
+    TextView txtHumidity;
+    TextView txtTemperature;
 
-<<<<<<< HEAD
-        Bundle bundle = getIntent().getExtras();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_room);
+        Intent intent = getIntent();
+        if (intent != null) {
+            String roomPath = intent.getStringExtra("roomPath");
+            Log.d("aaa", "roomPath" + roomPath);
+            getDevices(roomPath);
+
+        }
+    }
+    public void getDevices(String roomPath) {
         rec_device = findViewById(R.id.rec_room);
         deviceList = new ArrayList<>();
         adapter = new RoomAdapter();
@@ -38,141 +49,35 @@ public class RoomActivity extends AppCompatActivity {
 
         rec_device.setLayoutManager(new GridLayoutManager(this, 2));
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("test1");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot data : snapshot.getChildren()){
-                    String houseId = data.getKey();
-                    for(DataSnapshot dataFloor : data.child("floors").getChildren()){
-                        String idFloor = dataFloor.getKey();
-                        String nameFloor = dataFloor.child("name").getValue(String.class);
-                        String idKeyFloor = bundle.getString("Floor1");
-                        String idKeyFloor2 = bundle.getString("Floor2");
-                        if ("e72cf36f-f9c5-4dee-b11a-951c0e3dc638".equals(idFloor)){
-                            for(DataSnapshot dataRoom : dataFloor.child("rooms").getChildren()){
-                                String keyRoom = bundle.getString("keyRoom");
-                                String idRoom = dataRoom.getKey();
-                                String nameRoom = dataRoom.child("name").getValue(String.class);
-                                String imgUrl = dataRoom.child("imgUrl").getValue(String.class);
-                                String idDHTCheck = dataRoom.child("rooms/DHT").getChildren().toString();
-                                    for(DataSnapshot dataDevice : dataRoom.child("devices").getChildren()){
-                                        String idDevice = dataDevice.getKey();
-                                        Long listCheck = dataRoom.child("devices").getChildrenCount();
-                                        Log.i("List Device" , String.valueOf(listCheck));
+        DatabaseReference roomRef = database.getReference(roomPath);
 
-                                        String nameDevice = dataDevice.child("name").getValue(String.class);
-                                        int endTime = dataDevice.child("endTime").getValue(Integer.class);
-                                        int startTime = dataDevice.child("startTime").getValue(Integer.class);
-                                        int state = dataDevice.child("state").getValue(Integer.class);
-                                        String imgUrlDevice  = dataDevice.child("imgUrl").getValue(String.class);
-                                        System.out.println("Check Key Room " + keyRoom + "" + idRoom);
-                                        if (keyRoom.equals(idRoom)) {
-                                            Log.i("Check If", "Ok");
-                                            deviceList.add(new Devices(endTime, nameDevice, startTime, state , imgUrlDevice));
-                                            adapter.updateDeviceList(deviceList);
-                                            adapter.notifyDataSetChanged();
-                                        }
-                                        Log.i("Get Data Room" , "Ok");
-                                        Log.i("keyRoom" , keyRoom +" @ "+ idRoom);
-                                    }
-                                //}
-                                Log.i("CheckData" , idRoom + nameRoom);
-                            }
-                        }
-                        if ("40b38a85-36ea-4a72-921a-2fbb579a2daf".equals(idFloor)){
-                            for(DataSnapshot dataRoom : dataFloor.child("rooms").getChildren()){
-                                String keyRoom = bundle.getString("keyRoom");
-                                String idRoom = dataRoom.getKey();
-                                String nameRoom = dataRoom.child("name").getValue(String.class);
-                                String imgUrl = dataRoom.child("imgUrl").getValue(String.class);
-                                String idDHTCheck = dataRoom.child("rooms/DHT").getChildren().toString();
-                                for(DataSnapshot dataDevice : dataRoom.child("devices").getChildren()){
-                                    String idDevice = dataDevice.getKey();
-                                    Long listCheck = dataRoom.child("devices").getChildrenCount();
-                                    Log.i("List Device" , String.valueOf(listCheck));
-
-                                    String nameDevice = dataDevice.child("name").getValue(String.class);
-                                    int endTime = dataDevice.child("endTime").getValue(Integer.class);
-                                    int startTime = dataDevice.child("startTime").getValue(Integer.class);
-                                    int state = dataDevice.child("state").getValue(Integer.class);
-                                    String imgUrlDevice  = dataDevice.child("imgUrl").getValue(String.class);
-                                    System.out.println("Check Key Room " + keyRoom + "" + idRoom);
-                                    if (keyRoom.equals(idRoom)) {
-                                        Log.i("Check If", "Ok");
-                                        deviceList.add(new Devices(endTime, nameDevice, startTime, state , imgUrlDevice));
-                                        adapter.updateDeviceList(deviceList);
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                    Log.i("Get Data Room" , "Ok");
-                                    Log.i("keyRoom" , keyRoom +" @ "+ idRoom);
-                                }
-                                //}
-                                Log.i("CheckData" , idRoom + nameRoom);
-                            }
-                        }
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
         adapter.updateDeviceList(deviceList);
         rec_device.setAdapter(adapter);
-=======
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_room);
-    Intent intent = getIntent();
-    if (intent != null) {
-      String roomPath = intent.getStringExtra("roomPath");
-      Log.d("aaa", "roomPath" + roomPath);
-      getDevices(roomPath);
->>>>>>> d642809 (C6.4 Update Code V1.3)
+        roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String roomName = snapshot.child("name").getValue(String.class);
+                Log.d("aaa", "room name: " + roomName);
+                for (DataSnapshot device : snapshot.child("devices").getChildren()) {
+                    String deviceId = device.getKey();
+                    String nameDevice = device.child("name").getValue(String.class);
+                    int endTime = device.child("endTime").getValue(Integer.class);
+                    int startTime = device.child("startTime").getValue(Integer.class);
+                    int state = device.child("state").getValue(Integer.class);
+                    Log.i("Check If", "Ok");
+                    deviceList.add(new Devices(endTime, nameDevice, startTime, state, null));
+                }
+                updateDeviceView();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
-  }
 
-  public void getDevices(String roomPath) {
-    rec_device = findViewById(R.id.rec_room);
-    deviceList = new ArrayList<>();
-    adapter = new RoomAdapter();
-    //txtHumidity = findViewById(R.id.txtHumidity);
-    txtTemperature = findViewById(R.id.txtTemperature);
-
-    rec_device.setLayoutManager(new GridLayoutManager(this, 2));
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference roomRef = database.getReference(roomPath);
-
-    adapter.updateDeviceList(deviceList);
-    rec_device.setAdapter(adapter);
-    roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
-      @Override
-      public void onDataChange(@NonNull DataSnapshot snapshot) {
-        String roomName = snapshot.child("name").getValue(String.class);
-        Log.d("aaa", "room name: " + roomName);
-        for (DataSnapshot device : snapshot.child("devices").getChildren()) {
-          String deviceId = device.getKey();
-          String nameDevice = device.child("name").getValue(String.class);
-          int endTime = device.child("endTime").getValue(Integer.class);
-          int startTime = device.child("startTime").getValue(Integer.class);
-          int state = device.child("state").getValue(Integer.class);
-          Log.i("Check If", "Ok");
-          deviceList.add(new Devices(endTime, nameDevice, startTime, state, null));
-        }
-        updateDeviceView();
-      }
-
-      @Override
-      public void onCancelled(@NonNull DatabaseError error) {
-      }
-    });
-  }
-
-  public void updateDeviceView() {
-    adapter.updateDeviceList(deviceList);
-    adapter.notifyDataSetChanged();
-  }
+    public void updateDeviceView() {
+        adapter.updateDeviceList(deviceList);
+        adapter.notifyDataSetChanged();
+    }
 }
