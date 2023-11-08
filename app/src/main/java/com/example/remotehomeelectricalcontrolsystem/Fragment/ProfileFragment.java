@@ -13,7 +13,6 @@ import com.example.remotehomeelectricalcontrolsystem.R;
 
 
 public class ProfileFragment extends Fragment {
-    public static final String TAG = ProfileFragment.class.getName();
 
     public static ProfileFragment newInstance(){
         ProfileFragment fragment = new ProfileFragment();

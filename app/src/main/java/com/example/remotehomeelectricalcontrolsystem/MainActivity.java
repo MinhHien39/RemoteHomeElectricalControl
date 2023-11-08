@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
+import com.example.remotehomeelectricalcontrolsystem.Adapter.UserHouseAdapter;
 import com.example.remotehomeelectricalcontrolsystem.Fragment.HomeFragment;
 import com.example.remotehomeelectricalcontrolsystem.Fragment.ProfileFragment;
 import com.example.remotehomeelectricalcontrolsystem.Model.SharedUser;
@@ -127,22 +128,9 @@ public class MainActivity extends AppCompatActivity {
     getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, homeFragment).commit();
 
 
-<<<<<<< HEAD
-    bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-      @Override
-      public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.nav_home) {
-          homeFragment = HomeFragment.newInstance();
-          Log.i("Home Fragment" , "Check Home");
-        } else if (item.getItemId() == R.id.nav_profile) {
-          homeFragment = ProfileFragment.newInstance();
-          Log.i("Profile Fragment" , "Check Profile");
-        }
-=======
     bottomNavigation.setOnItemSelectedListener(item -> {
       if (item.getItemId() == R.id.nav_home) {
         homeFragment = HomeFragment.newInstance();
->>>>>>> 5ad39a7495a5bd68af94ca94b32c5dd740edeae1
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, homeFragment).commit();
         homeFragment.setArguments(bundle);
         return true;
