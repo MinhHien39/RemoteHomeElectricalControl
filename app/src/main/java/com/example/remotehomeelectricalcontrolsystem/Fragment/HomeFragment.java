@@ -3,11 +3,13 @@ package com.example.remotehomeelectricalcontrolsystem.Fragment;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,7 @@ import java.util.List;
 
 
 public class HomeFragment extends Fragment {
+  public static final String TAG = HomeFragment.class.getName();
 
   RecyclerView rec_home;
   HomeAdapter homeAdapter;
@@ -36,6 +39,41 @@ public class HomeFragment extends Fragment {
   public static HomeFragment newInstance() {
     HomeFragment fragment = new HomeFragment();
     return fragment;
+  }
+
+  @Override
+  public void onSaveInstanceState(@NonNull Bundle outState) {
+    super.onSaveInstanceState(outState);
+    Bundle bundle = this.getArguments();
+    String houseId = bundle.getString("houseId");
+    Log.i("houseId Bundle In Home Fragment" , houseId);
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    String pathHouse = "/test1/" + houseId;
+    DatabaseReference houseRef = database.getReference(pathHouse + "/floors");
+    homeAdapter.setHousePath(pathHouse);
+    houseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+      @Override
+      public void onDataChange(@NonNull DataSnapshot snapshot) {
+        for (DataSnapshot dataFloor : snapshot.getChildren()) {
+          Log.i("Check Key In Home Fragment " , dataFloor.getKey());
+          String floorId = dataFloor.getKey();
+          String floorName = dataFloor.child("name").getValue(String.class);
+          floorList.add(new Floor(floorId, floorName));
+        }
+        updateListView();
+      }
+
+      @Override
+      public void onCancelled(@NonNull DatabaseError error) {
+        System.out.println(error.getMessage());
+
+      }
+    });
+  }
+
+  @Override
+  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
   }
 
   @Override
@@ -52,6 +90,7 @@ public class HomeFragment extends Fragment {
     Bundle bundle = this.getArguments();
     if (bundle != null) {
       String houseId = bundle.getString("houseId");
+      Log.i("houseId Bundle In Home Fragment" , houseId);
       FirebaseDatabase database = FirebaseDatabase.getInstance();
       String pathHouse = "/test1/" + houseId;
       DatabaseReference houseRef = database.getReference(pathHouse + "/floors");
@@ -60,6 +99,7 @@ public class HomeFragment extends Fragment {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
           for (DataSnapshot dataFloor : snapshot.getChildren()) {
+            Log.i("Check Key In Home Fragment " , dataFloor.getKey());
             String floorId = dataFloor.getKey();
             String floorName = dataFloor.child("name").getValue(String.class);
             floorList.add(new Floor(floorId, floorName));
@@ -74,14 +114,24 @@ public class HomeFragment extends Fragment {
         }
       });
     }
-
-    updateListView();
+    //updateListView();
     return root;
   }
+
 
   public void updateListView() {
     homeAdapter.updateListFloor(floorList);
     homeAdapter.notifyDataSetChanged();
     rec_home.setAdapter(homeAdapter);
   }
+
+
+
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    //Log.i("Check Save State" , savedInstanceState.toString());
+  }
+
+
 }

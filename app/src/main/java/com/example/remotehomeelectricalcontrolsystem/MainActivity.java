@@ -94,8 +94,10 @@ public class MainActivity extends AppCompatActivity {
       public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.nav_home) {
           homeFragment = HomeFragment.newInstance();
+          Log.i("Home Fragment" , "Check Home");
         } else if (item.getItemId() == R.id.nav_profile) {
           homeFragment = ProfileFragment.newInstance();
+          Log.i("Profile Fragment" , "Check Profile");
         }
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, homeFragment).commit();
         return true;
