@@ -11,7 +11,6 @@ import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
-import com.example.remotehomeelectricalcontrolsystem.Adapter.UserHouseAdapter;
 import com.example.remotehomeelectricalcontrolsystem.Fragment.HomeFragment;
 import com.example.remotehomeelectricalcontrolsystem.Fragment.ProfileFragment;
 import com.example.remotehomeelectricalcontrolsystem.Model.SharedUser;
