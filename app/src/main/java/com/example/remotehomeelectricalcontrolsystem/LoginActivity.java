@@ -32,7 +32,6 @@ public class LoginActivity extends AppCompatActivity {
   CheckBox cbRememberMe;
   Button btnLogin;
   User user = null;
-  boolean[] isValidForm = {false, false};
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -44,22 +43,6 @@ public class LoginActivity extends AppCompatActivity {
     autoFillCredentials();
     autoFillLoginForm();
 
-    edtEmail.setOnFocusChangeListener((view, hasFocus) -> {
-      if (!hasFocus) {
-        String email = edtEmail.getText().toString();
-        String emailError = InputValidator.isValidEmail(email);
-        edtEmail.setError(emailError);
-      }
-    });
-
-    edtPassword.setOnFocusChangeListener((view, hasFocus) -> {
-      if (!hasFocus) {
-        String password = edtPassword.getText().toString();
-        String passwordError = InputValidator.isValidPassword(password);
-        edtPassword.setError(passwordError);
-      }
-    });
-
     btnLogin.setOnClickListener(view -> {
       String email = edtEmail.getText().toString();
       String password = edtPassword.getText().toString();
@@ -67,12 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         isUserExist(email, password);
     });
 
-    txtSignup.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        moveScreen(LoginActivity.this, SignupActivity.class);
-      }
-    });
+    txtSignup.setOnClickListener(v -> moveScreen(LoginActivity.this, SignupActivity.class));
   }
 
   public void init() {
@@ -123,16 +101,21 @@ public class LoginActivity extends AppCompatActivity {
   }
 
   public boolean checkAllFields(String email, String password) {
-    boolean[] isValidForm = InputValidator.areAllFieldsNotEmpty(email, password);
-    boolean allFieldsValid = true;
-    for (int i = 0; i < isValidForm.length; i++) {
-      if (!isValidForm[i]) {
-        allFieldsValid = false;
-        if (i == 0) edtEmail.setError("This field is required");
-        else edtPassword.setError("This field is required");
-      }
+    if (email.isEmpty() || password.isEmpty()) {
+      Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+      return false;
     }
-    return allFieldsValid;
+    if (!InputValidator.isValidEmail(email)) {
+      edtEmail.setError("Please enter a valid email address.");
+      edtEmail.requestFocus();
+      return false;
+    }
+    if (!InputValidator.isValidPassword(password)) {
+      edtPassword.setError("Password must be at least 8 characters.");
+      edtPassword.requestFocus();
+      return false;
+    }
+    return true;
   }
 
   public void isUserExist(String emailToCheck, String passwordToCheck) {
@@ -142,7 +125,6 @@ public class LoginActivity extends AppCompatActivity {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
         if (dataSnapshot.exists()) {
-          // User with the given email exists
           for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
             String userId = userSnapshot.getKey();
             String name = userSnapshot.child("name").getValue(String.class);
@@ -163,7 +145,6 @@ public class LoginActivity extends AppCompatActivity {
             }
           }
         } else {
-          // User with the given email does not exist
           Toast.makeText(LoginActivity.this, "Email or password is incorrect", Toast.LENGTH_LONG).show();
         }
         btnLogin.setEnabled(true);

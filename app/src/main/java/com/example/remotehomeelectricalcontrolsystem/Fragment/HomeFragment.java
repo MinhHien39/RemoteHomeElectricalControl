@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.example.remotehomeelectricalcontrolsystem.Adapter.HomeAdapter;
 
 import com.example.remotehomeelectricalcontrolsystem.Model.Floor;
+import com.example.remotehomeelectricalcontrolsystem.Model.Room;
 import com.example.remotehomeelectricalcontrolsystem.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,6 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -104,21 +107,31 @@ public class HomeFragment extends Fragment {
             String floorName = dataFloor.child("name").getValue(String.class);
             floorList.add(new Floor(floorId, floorName));
           }
+          sortByFloorName();
           updateListView();
         }
 
         @Override
         public void onCancelled(@NonNull DatabaseError error) {
           System.out.println(error.getMessage());
-
         }
       });
     }
+<<<<<<< HEAD
     //updateListView();
     return root;
   }
 
 
+=======
+
+
+    return root;
+  }
+  public void sortByFloorName() {
+    Collections.sort(floorList, Comparator.comparing(Floor::getName));
+  }
+>>>>>>> 5ad39a7495a5bd68af94ca94b32c5dd740edeae1
   public void updateListView() {
     homeAdapter.updateListFloor(floorList);
     homeAdapter.notifyDataSetChanged();

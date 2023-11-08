@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?><!-- house_selection_dialog.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="300dp"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:padding="10dp"
+    android:text="Select a House"
+    android:textSize="20sp" />
+
+  <ListView
+    android:id="@+id/lvHouse"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    />
+</LinearLayout>
