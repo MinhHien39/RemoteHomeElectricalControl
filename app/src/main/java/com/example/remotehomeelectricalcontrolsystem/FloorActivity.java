@@ -86,12 +86,7 @@ public class FloorActivity extends AppCompatActivity {
   }
 
   public void sortByRoomName() {
-    Collections.sort(roomList, new Comparator<Room>() {
-      @Override
-      public int compare(Room room1, Room room2) {
-        return room1.getNameRoom().compareTo(room2.getNameRoom());
-      }
-    });
+    Collections.sort(roomList, Comparator.comparing(Room::getNameRoom));
   }
 
   public void updateFloorView() {

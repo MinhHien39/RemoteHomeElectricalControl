@@ -7,9 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +18,6 @@ import com.example.remotehomeelectricalcontrolsystem.Utils.Format;
 import com.example.remotehomeelectricalcontrolsystem.Utils.InputValidator;
 import com.example.remotehomeelectricalcontrolsystem.Model.User;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,13 +29,10 @@ import java.util.UUID;
 public class SignupActivity extends AppCompatActivity {
   private FirebaseDatabase db;
   private DatabaseReference usersRef, housesRef, usersHousesRef;
-  TextInputEditText edtName, edtEmail, edtTelephone, edtHouseKey, edtPassword;
-  TextInputLayout layoutName, layoutEmail, layoutTelephone, layoutHouseKey, layoutPassword;
+  TextInputEditText edtFullName, edtEmail, edtTelephone, edtHouseKey, edtPassword;
   TextView txtLogin;
   Button btnSignUp;
-//  UUID uuid;
   String role, houseId;
-  boolean[] isValidForm = {false, false, false, false, false};
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -47,82 +41,16 @@ public class SignupActivity extends AppCompatActivity {
 
     init();
 
-    edtName.setOnFocusChangeListener((view, hasFocus) -> {
-      if (!hasFocus) {
-        String name = edtName.getText().toString();
-        String fullNameError = InputValidator.isValidFullName(name);
-        if (fullNameError != null) {
-          edtName.setError(fullNameError);
-          isValidForm[0] = false;
-        } else {
-          edtName.setError(null);
-          isValidForm[0] = true;
-        }
-      }
-    });
-
-    edtEmail.setOnFocusChangeListener((view, hasFocus) -> {
-      if (!hasFocus) {
-        String email = edtEmail.getText().toString();
-        String emailError = InputValidator.isValidEmail(email);
-        if (emailError != null) {
-          edtEmail.setError(emailError);
-          isValidForm[1] = false;
-        } else {
-          edtEmail.setError(null);
-          isValidForm[1] = true;
-        }
-      }
-    });
-
-    edtTelephone.setOnFocusChangeListener((view, hasFocus) -> {
-      if (!hasFocus) {
-        String tel = edtTelephone.getText().toString();
-        String telError = InputValidator.isValidPhoneNumber(tel);
-        if (telError != null) {
-          edtTelephone.setError(telError);
-          isValidForm[2] = false;
-        } else {
-          edtTelephone.setError(null);
-          isValidForm[2] = true;
-        }
-      }
-    });
-
-    edtHouseKey.setOnFocusChangeListener((view, b) -> {
-      if (!b) {
-        String houseKey = edtHouseKey.getText().toString();
-        checkHouseKeyExist(houseKey);
-      }
-    });
-
-    edtPassword.setOnFocusChangeListener((view, hasFocus) -> {
-      if (!hasFocus) {
-        String password = edtPassword.getText().toString();
-        String passwordError = InputValidator.isValidPassword(password);
-        if (passwordError != null) {
-          edtPassword.setError(passwordError);
-          isValidForm[4] = false;
-        } else {
-          isValidForm[4] = true;
-        }
-      }
-    });
-
     btnSignUp.setOnClickListener(v -> {
       String email = edtEmail.getText().toString();
       String password = edtPassword.getText().toString();
-      String fullName = edtName.getText().toString();
+      String fullName = edtFullName.getText().toString();
       String houseKey = edtHouseKey.getText().toString();
       String telephone = edtTelephone.getText().toString();
 
-      clearFocusFromInputField();
 
       if (checkAllFields(fullName, email, telephone, houseKey, password)) {
         checkRegisteredAccount(email, houseKey, fullName, telephone, password);
-        // Do not continue with the code here
-      } else {
-        Toast.makeText(SignupActivity.this, "Please check your registration information again", Toast.LENGTH_LONG).show();
       }
     });
 
@@ -133,11 +61,10 @@ public class SignupActivity extends AppCompatActivity {
   }
 
   public void init() {
-    edtName = findViewById(R.id.edtName);
+    edtFullName = findViewById(R.id.edtName);
     edtEmail = findViewById(R.id.edtEmail);
     edtPassword = findViewById(R.id.edtPassword);
     edtHouseKey = findViewById(R.id.edtHouseKey);
-    layoutHouseKey = findViewById(R.id.layoutHouseKey);
     edtTelephone = findViewById(R.id.edtTelephone);
     txtLogin = findViewById(R.id.txtLogin);
     btnSignUp = findViewById(R.id.btnSignUp);
@@ -148,54 +75,31 @@ public class SignupActivity extends AppCompatActivity {
   }
 
   public boolean checkAllFields(String name, String email, String telephone, String houseKey, String password) {
-    boolean[] isValidForm = InputValidator.areAllFieldsNotEmpty(name, telephone, email, houseKey, password);
-    boolean allFieldsValid = true;
-    for (int i = 0; i < isValidForm.length; i++) {
-      if (!isValidForm[i]) {
-        allFieldsValid = false;
-        if (i == 0) edtName.setError("This field is required");
-        else if (i == 1) edtEmail.setError("This field is required");
-        else if (i == 2) edtTelephone.setError("This field is required");
-        else if (i == 3) edtHouseKey.setError("This field is required");
-        else edtPassword.setError("This field is required");
-      }
+    if (name.isEmpty() || telephone.isEmpty() || email.isEmpty() || password.isEmpty() || houseKey.isEmpty()) {
+      Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+      return false;
     }
-    return allFieldsValid;
-  }
-
-  public void checkHouseKeyExist(String houseKeyToCheck) {
-    String encryptHouseKey = EncryptionUtils.encrypt(houseKeyToCheck);
-    Log.d("aaa", encryptHouseKey);
-    housesRef.addValueEventListener(new ValueEventListener() {
-      @Override
-      public void onDataChange(@NonNull DataSnapshot snapshot) {
-        String emailHost = null;
-        boolean isExist = false;
-        for (DataSnapshot houseSnapshot : snapshot.getChildren()) {
-          String houseKey = houseSnapshot.child("houseKey").getValue(String.class);
-          if (houseKey.equals(encryptHouseKey)) {
-            houseId = houseSnapshot.getKey();
-            emailHost = houseSnapshot.child("emailHost").getValue(String.class);
-            String email = edtEmail.getText().toString();
-            isExist = true;
-
-            role = emailHost.equals(email) ? "host" : "member";
-            break;
-          }
-        }
-        if (!isExist) {
-          edtHouseKey.setError("House key does not exist!");
-          isValidForm[3] = false;
-        } else {
-          isValidForm[3] = true;
-        }
-      }
-
-      @Override
-      public void onCancelled(@NonNull DatabaseError error) {
-
-      }
-    });
+    if (!InputValidator.isValidFullName(name)) {
+      edtFullName.setError("Please enter a valid full name.");
+      edtFullName.requestFocus();
+      return false;
+    }
+    if (!InputValidator.isValidPhoneNumber(telephone)) {
+      edtTelephone.setError("Please enter a valid phone number.");
+      edtTelephone.requestFocus();
+      return false;
+    }
+    if (!InputValidator.isValidEmail(email)) {
+      edtEmail.setError("Please enter a valid email address.");
+      edtEmail.requestFocus();
+      return false;
+    }
+    if (!InputValidator.isValidPassword(password)) {
+      edtPassword.setError("Password must be at least 8 characters.");
+      edtPassword.requestFocus();
+      return false;
+    }
+    return true;
   }
 
   public void checkRegisteredAccount(String emailToCheck, String houseKeyToCheck, String fullName, String telephone, String password) {
@@ -205,35 +109,36 @@ public class SignupActivity extends AppCompatActivity {
       @Override
       public void onDataChange(@NonNull DataSnapshot snapshot) {
         if (snapshot.exists()) {
-          for (DataSnapshot houseSnapshot : snapshot.getChildren()) {
-            String houseId = houseSnapshot.getKey();
-            Log.d("aaa", "houseRefs");
+          for (DataSnapshot house : snapshot.getChildren()) {
+            houseId = house.getKey();
+            String emailHost = house.child("emailHost").getValue(String.class);
+            role = emailToCheck.equals(emailHost) ? "host" : "member";
             usersRef.orderByChild("email").equalTo(emailToCheck).addListenerForSingleValueEvent(new ValueEventListener() {
               @Override
               public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                  for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    String userId = userSnapshot.getKey();
+                  for (DataSnapshot user : snapshot.getChildren()) {
+                    String userId = user.getKey();
                     usersHousesRef.orderByChild("userId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                       @Override
                       public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                          for (DataSnapshot userHouseSnapshot : snapshot.getChildren()) {
-                            String userIdToCheck = userHouseSnapshot.child("userId").getValue(String.class).toString();
-                            String houseIdToCheck = userHouseSnapshot.child("houseId").getValue(String.class).toString();
+                          boolean isRegistered = false;
+                          for (DataSnapshot userHouse : snapshot.getChildren()) {
+                            String userIdToCheck = userHouse.child("userId").getValue(String.class).toString();
+                            String houseIdToCheck = userHouse.child("houseId").getValue(String.class).toString();
                             if (userIdToCheck.equals(userId) && houseIdToCheck.equals(houseId)) {
                               Toast.makeText(SignupActivity.this, "Account already exists!", Toast.LENGTH_LONG).show();
-                              edtHouseKey.setText("");
                               edtHouseKey.setError("Please re-enter another house key");
-                              isValidForm[3] = false;
+                              edtHouseKey.requestFocus();
+                              isRegistered = true;
+                              break;
                             }
                           }
-                          Log.d("aaa", "isValidForm[3]: " + isValidForm[3]);
-                          if (isValidForm[3] == true) {
+                          if (!isRegistered) {
                             continueRegistration(userId, fullName, emailToCheck, telephone, password);
                           }
                         } else {
-                          isValidForm[3] = true;
                           continueRegistration(userId, fullName, emailToCheck, telephone, password);
                         }
                       }
@@ -245,7 +150,6 @@ public class SignupActivity extends AppCompatActivity {
                     });
                   }
                 } else {
-                  isValidForm[3] = true;
                   continueRegistration(null, fullName, emailToCheck, telephone, password);
                 }
               }
@@ -256,38 +160,28 @@ public class SignupActivity extends AppCompatActivity {
               }
             });
           }
+        } else {
+          edtHouseKey.setError("House key does not exist!");
+          edtHouseKey.requestFocus();
         }
       }
 
       @Override
       public void onCancelled(@NonNull DatabaseError error) {
-
       }
     });
-
   }
 
   private void continueRegistration(String userId, String fullName, String email, String telephone, String password) {
-    boolean allFieldsValid = true;
-    for (boolean isValid : isValidForm) {
-      Log.d("aaa", String.valueOf(isValid));
-      if (!isValid) {
-        allFieldsValid = false;
-        break;
-      }
-    }
-    if (allFieldsValid) {
-      Log.d("aaa", isValidForm.toString());
-      String encryptPass = EncryptionUtils.encrypt(password);
+    String encryptPass = EncryptionUtils.encrypt(password);
 
-      if (userId == null) {
-        userId = UUID.randomUUID().toString();
-        writeNewUser(userId, fullName, email, telephone, encryptPass);
-      }
-      Log.d("aaa", "continueRegistration()");
-      writeNewUserHouse(userId, fullName, email, telephone);
-      moveScreen(SignupActivity.this, LoginActivity.class);
+    if (userId == null) {
+      userId = UUID.randomUUID().toString();
+      writeNewUser(userId, fullName, email, telephone, encryptPass);
     }
+    Log.d("aaa", "continueRegistration()");
+    writeNewUserHouse(userId, fullName, email, telephone);
+    moveScreen(SignupActivity.this, LoginActivity.class);
   }
 
   public void writeNewUser(String userId, String name, String email, String telephone, String password) {
@@ -297,7 +191,7 @@ public class SignupActivity extends AppCompatActivity {
   }
 
   public void writeNewUserHouse(String userId, String name, String email, String telephone) {
-    UserHouse userHouse = new UserHouse(userId, houseId, role);
+    UserHouse userHouse = new UserHouse(null, userId, houseId, role);
     usersHousesRef.child(UUID.randomUUID().toString()).setValue(userHouse);
     Toast.makeText(SignupActivity.this, "Successful account registration!", Toast.LENGTH_LONG).show();
     String password = edtPassword.getText().toString();
@@ -308,12 +202,5 @@ public class SignupActivity extends AppCompatActivity {
   public void moveScreen(Activity currentScreen, Class<? extends Activity> nextScreenClass) {
     Intent intent = new Intent(currentScreen, nextScreenClass);
     startActivity(intent);
-  }
-
-  private void clearFocusFromInputField() {
-    View currentFocus = getCurrentFocus();
-    if (currentFocus instanceof EditText) {
-      currentFocus.clearFocus();
-    }
   }
 }

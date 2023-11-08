@@ -1,12 +1,21 @@
 package com.example.remotehomeelectricalcontrolsystem.Model;
 
 public class UserHouse {
-  private String userId, houseId, role;
+  private String userHouseId, userId, houseId, role;
 
-  public UserHouse(String userId, String houseId, String role) {
+  public UserHouse(String userHouseId, String userId, String houseId, String role) {
+    this.userHouseId = userHouseId;
     this.userId = userId;
     this.houseId = houseId;
     this.role = role;
+  }
+
+  public String getUserHouseId() {
+    return userHouseId;
+  }
+
+  public void setUserHouseId(String userHouseId) {
+    this.userHouseId = userHouseId;
   }
 
   public String getUserId() {

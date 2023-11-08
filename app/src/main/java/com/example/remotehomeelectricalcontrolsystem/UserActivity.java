@@ -8,11 +8,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -22,6 +20,8 @@ import com.example.remotehomeelectricalcontrolsystem.Model.UserHouse;
 import com.example.remotehomeelectricalcontrolsystem.Utils.EncryptionUtils;
 import com.example.remotehomeelectricalcontrolsystem.Utils.Format;
 import com.example.remotehomeelectricalcontrolsystem.Utils.InputValidator;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,14 +34,17 @@ import java.util.UUID;
 public class UserActivity extends AppCompatActivity {
   private FirebaseDatabase db;
   private DatabaseReference usersRef, housesRef, usersHousesRef;
+  private DatabaseReference userRef, houseRef, userHouseRef;
   LinearLayout linearUpdateDelete, linearSubmit;
-  TextInputEditText edtName, edtEmail, edtTel, edtHouseKey, edtPassword;
-  Button btnAdd;
+  TextInputEditText edtFullName, edtEmail, edtTelephone, edtHouseKey, edtPassword;
+  MaterialToolbar topAppBar;
+  Button btnAdd, btnDelete, btnUpdate;
   AutoCompleteTextView autoCompleteRole;
   String[] roles = new String[]{"admin", "host", "member"};
   ArrayAdapter<String> adapterRoles;
-  String role, houseId;
-  boolean[] isValidForm = {false, false, false, false, false};
+  String role, houseId, userId, userHouseId;
+  Bundle bundle;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -49,111 +52,96 @@ public class UserActivity extends AppCompatActivity {
 
     init();
 
-    Bundle bundle = getIntent().getExtras();
+    bundle = getIntent().getExtras();
 
     if (bundle != null) {
-      String userId = bundle.getString("userId");
+      userHouseId = bundle.getString("userHouseId");
+      userHouseRef = db.getReference("usersHouses/" + userHouseId);
+      userHouseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot userHouse) {
+          role = userHouse.child("role").getValue(String.class);
+          setRole(role);
+          houseId = userHouse.child("houseId").getValue(String.class);
+          userId = userHouse.child("userId").getValue(String.class);
+          userRef = db.getReference("users/" + userId);
+          houseRef = db.getReference("test1/" + houseId);
+          userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot user) {
+              edtFullName.setText(user.child("name").getValue(String.class));
+              edtEmail.setText(user.child("email").getValue(String.class));
+              edtTelephone.setText(user.child("tel").getValue(String.class));
+              String hashPass = user.child("password").getValue(String.class);
+              String password = EncryptionUtils.decrypt(hashPass);
+              edtPassword.setText(password);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+          });
+          houseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot house) {
+              String hashKey = house.child("houseKey").getValue(String.class);
+              String houseKey = EncryptionUtils.decrypt(hashKey);
+              edtHouseKey.setText(houseKey);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+          });
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+        }
+      });
       showUpdateDelete();
     } else {
       showSubmit();
     }
-    edtName.setOnFocusChangeListener((view, hasFocus) -> {
-      if (!hasFocus) {
-        String name = edtName.getText().toString();
-        String fullNameError = InputValidator.isValidFullName(name);
-        if (fullNameError != null) {
-          edtName.setError(fullNameError);
-          isValidForm[0] = false;
-        } else {
-          edtName.setError(null);
-          isValidForm[0] = true;
-        }
-      }
+    topAppBar.setNavigationOnClickListener(view -> {
+      finish();
     });
+    btnAdd.setOnClickListener(v -> handleSubmit());
+    btnUpdate.setOnClickListener(v -> handleSubmit());
+    btnDelete.setOnClickListener(view -> {
+      MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(UserActivity.this)
+          .setTitle("Are you sure you want to delete this user?")
+          .setPositiveButton("Yes", (dialogInterface, i) -> {
+            usersHousesRef.orderByChild("userId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+              @Override
+              public void onDataChange(@NonNull DataSnapshot usersHouses) {
+                if (usersHouses.getChildrenCount() == 1) {
+                  userRef.removeValue();
+                }
+                userHouseRef.removeValue((error, ref) -> {
+                  Toast.makeText(UserActivity.this, "Delete user success!", Toast.LENGTH_SHORT).show();
+                  moveScreen(UserActivity.this, AdminActivity.class);
+                });
+              }
 
-    edtEmail.setOnFocusChangeListener((view, hasFocus) -> {
-      if (!hasFocus) {
-        String email = edtEmail.getText().toString();
-        String emailError = InputValidator.isValidEmail(email);
-        if (emailError != null) {
-          edtEmail.setError(emailError);
-          isValidForm[1] = false;
-        } else {
-          edtEmail.setError(null);
-          isValidForm[1] = true;
-        }
-      }
+              @Override
+              public void onCancelled(@NonNull DatabaseError error) {
+
+              }
+            });
+            dialogInterface.dismiss();
+          })
+          .setNegativeButton("No", (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+          });
+
+      dialog.show();
     });
-
-    edtTel.setOnFocusChangeListener((view, hasFocus) -> {
-      if (!hasFocus) {
-        String tel = edtTel.getText().toString();
-        String telError = InputValidator.isValidPhoneNumber(tel);
-        if (telError != null) {
-          edtTel.setError(telError);
-          isValidForm[2] = false;
-        } else {
-          edtTel.setError(null);
-          isValidForm[2] = true;
-        }
-      }
-    });
-
-    edtHouseKey.setOnFocusChangeListener((view, b) -> {
-      if (!b) {
-        String houseKey = edtHouseKey.getText().toString();
-        checkHouseKeyExist(houseKey);
-      }
-    });
-
-    edtPassword.setOnFocusChangeListener((view, hasFocus) -> {
-      if (!hasFocus) {
-        String password = edtPassword.getText().toString();
-        String passwordError = InputValidator.isValidPassword(password);
-        if (passwordError != null) {
-          edtPassword.setError(passwordError);
-          isValidForm[4] = false;
-        } else {
-          isValidForm[4] = true;
-        }
-      }
-    });
-
-//    autoCompleteRole.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//      @Override
-//      public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//        String valueSelected = adapterView.getItemAtPosition(i).toString();
-//        Toast.makeText(UserActivity.this, "lsadkjflksad", Toast.LENGTH_SHORT).show();
-//      }
-//
-//      @Override
-//      public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//      }
-//    });
-
-    btnAdd.setOnClickListener(v -> {
-      String email = edtEmail.getText().toString();
-      String password = edtPassword.getText().toString();
-      String fullName = edtName.getText().toString();
-      String houseKey = edtHouseKey.getText().toString();
-      String telephone = edtTel.getText().toString();
-      role = autoCompleteRole.getText().toString();
-
-      clearFocusFromInputField();
-
-      if (checkAllFields(fullName, email, telephone, houseKey, password)) {
-        checkRegisteredAccount(email, houseKey, fullName, telephone, password);
-        // Do not continue with the code here
-      } else {
-        Toast.makeText(UserActivity.this, "Please check your registration information again", Toast.LENGTH_LONG).show();
-      }
-    });
-
   }
 
   public void showUpdateDelete() {
     linearUpdateDelete.setVisibility(View.VISIBLE);
+    edtEmail.setEnabled(false);
   }
 
   public void showSubmit() {
@@ -161,12 +149,15 @@ public class UserActivity extends AppCompatActivity {
   }
 
   public void init() {
-    edtName = findViewById(R.id.edtName);
+    topAppBar = findViewById(R.id.topAppBar);
+    edtFullName = findViewById(R.id.edtName);
     edtEmail = findViewById(R.id.edtEmail);
     edtPassword = findViewById(R.id.edtPassword);
     edtHouseKey = findViewById(R.id.edtHouseKey);
-    edtTel = findViewById(R.id.edtTel);
+    edtTelephone = findViewById(R.id.edtTel);
     btnAdd = findViewById(R.id.btnAdd);
+    btnDelete = findViewById(R.id.btnDelete);
+    btnUpdate = findViewById(R.id.btnUpdate);
     db = FirebaseDatabase.getInstance();
     usersRef = db.getReference("users");
     housesRef = db.getReference("test1");
@@ -174,56 +165,65 @@ public class UserActivity extends AppCompatActivity {
     linearUpdateDelete = findViewById(R.id.linearUpdateDelete);
     linearSubmit = findViewById(R.id.linearSubmit);
     autoCompleteRole = findViewById(R.id.autoCompleteRole);
-    adapterRoles = new ArrayAdapter<String>(this, R.layout.list_item, roles);
+    adapterRoles = new ArrayAdapter<>(this, R.layout.list_item, roles);
     autoCompleteRole.setAdapter(adapterRoles);
     autoCompleteRole.setText(adapterRoles.getItem(2), false);
+  }
 
+  public void setRole(@NonNull String role) {
+    switch (role) {
+      case "admin":
+        autoCompleteRole.setText(adapterRoles.getItem(0), false);
+        break;
+      case "host":
+        autoCompleteRole.setText(adapterRoles.getItem(1), false);
+        break;
+      case "member":
+        autoCompleteRole.setText(adapterRoles.getItem(2), false);
+        break;
+    }
+  }
+
+  public void handleSubmit() {
+    String email = edtEmail.getText().toString();
+    String password = edtPassword.getText().toString();
+    String fullName = edtFullName.getText().toString();
+    String houseKey = edtHouseKey.getText().toString();
+    String telephone = edtTelephone.getText().toString();
+    role = autoCompleteRole.getText().toString();
+
+
+    if (checkAllFields(fullName, email, telephone, houseKey, password)) {
+      checkRegisteredAccount(email, houseKey, fullName, telephone, password);
+    }
   }
 
   public boolean checkAllFields(String name, String email, String telephone, String houseKey, String password) {
-    boolean[] isValidForm = InputValidator.areAllFieldsNotEmpty(name, telephone, email, houseKey, password);
-    boolean allFieldsValid = true;
-    for (int i = 0; i < isValidForm.length; i++) {
-      if (!isValidForm[i]) {
-        allFieldsValid = false;
-        if (i == 0) edtName.setError("This field is required");
-        else if (i == 1) edtEmail.setError("This field is required");
-        else if (i == 2) edtTel.setError("This field is required");
-        else if (i == 3) edtHouseKey.setError("This field is required");
-        else edtPassword.setError("This field is required");
-      }
+    if (name.isEmpty() || telephone.isEmpty() || email.isEmpty() || password.isEmpty() || houseKey.isEmpty()) {
+      Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+      return false;
     }
-    return allFieldsValid;
-  }
-
-  public void checkHouseKeyExist(String houseKeyToCheck) {
-    String encryptHouseKey = EncryptionUtils.encrypt(houseKeyToCheck);
-    Log.d("aaa", encryptHouseKey);
-    housesRef.addValueEventListener(new ValueEventListener() {
-      @Override
-      public void onDataChange(@NonNull DataSnapshot snapshot) {
-        boolean isExist = false;
-        for (DataSnapshot houseSnapshot : snapshot.getChildren()) {
-          String houseKey = houseSnapshot.child("houseKey").getValue(String.class);
-          if (houseKey.equals(encryptHouseKey)) {
-            houseId = houseSnapshot.getKey();
-            isExist = true;
-            break;
-          }
-        }
-        if (!isExist) {
-          edtHouseKey.setError("House key does not exist!");
-          isValidForm[3] = false;
-        } else {
-          isValidForm[3] = true;
-        }
-      }
-
-      @Override
-      public void onCancelled(@NonNull DatabaseError error) {
-
-      }
-    });
+    if (!InputValidator.isValidFullName(name)) {
+      edtFullName.setError("Please enter a valid full name.");
+      edtFullName.requestFocus();
+      return false;
+    }
+    if (!InputValidator.isValidPhoneNumber(telephone)) {
+      edtTelephone.setError("Please enter a valid phone number.");
+      edtTelephone.requestFocus();
+      return false;
+    }
+    if (!InputValidator.isValidEmail(email)) {
+      edtEmail.setError("Please enter a valid email address.");
+      edtEmail.requestFocus();
+      return false;
+    }
+    if (!InputValidator.isValidPassword(password)) {
+      edtPassword.setError("Password must be at least 8 characters.");
+      edtPassword.requestFocus();
+      return false;
+    }
+    return true;
   }
 
   public void checkRegisteredAccount(String emailToCheck, String houseKeyToCheck, String fullName, String telephone, String password) {
@@ -233,35 +233,38 @@ public class UserActivity extends AppCompatActivity {
       @Override
       public void onDataChange(@NonNull DataSnapshot snapshot) {
         if (snapshot.exists()) {
-          for (DataSnapshot houseSnapshot : snapshot.getChildren()) {
-            String houseId = houseSnapshot.getKey();
-            Log.d("aaa", "houseRefs");
+          for (DataSnapshot house : snapshot.getChildren()) {
+            houseId = house.getKey();
             usersRef.orderByChild("email").equalTo(emailToCheck).addListenerForSingleValueEvent(new ValueEventListener() {
               @Override
               public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                  for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    String userId = userSnapshot.getKey();
+                  for (DataSnapshot user : snapshot.getChildren()) {
+                    String userId = user.getKey();
                     usersHousesRef.orderByChild("userId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                       @Override
                       public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                          for (DataSnapshot userHouseSnapshot : snapshot.getChildren()) {
-                            String userIdToCheck = userHouseSnapshot.child("userId").getValue(String.class).toString();
-                            String houseIdToCheck = userHouseSnapshot.child("houseId").getValue(String.class).toString();
-                            if (userIdToCheck.equals(userId) && houseIdToCheck.equals(houseId)) {
-                              Toast.makeText(UserActivity.this, "Account already exists!", Toast.LENGTH_LONG).show();
-                              edtHouseKey.setText("");
-                              edtHouseKey.setError("Please re-enter another house key");
-                              isValidForm[3] = false;
+                          boolean isRegistered = false;
+                          for (DataSnapshot userHouse : snapshot.getChildren()) {
+                            String userIdToCheck = userHouse.child("userId").getValue(String.class).toString();
+                            String houseIdToCheck = userHouse.child("houseId").getValue(String.class).toString();
+                            if (bundle != null) {
+                              break;
+                            } else {
+                              if (userIdToCheck.equals(userId) && houseIdToCheck.equals(houseId)) {
+                                Toast.makeText(UserActivity.this, "Account already exists!", Toast.LENGTH_LONG).show();
+                                edtHouseKey.setError("Please re-enter another house key");
+                                edtHouseKey.requestFocus();
+                                isRegistered = true;
+                                break;
+                              }
                             }
                           }
-                          Log.d("aaa", "isValidForm[3]: " + isValidForm[3]);
-                          if (isValidForm[3] == true) {
+                          if (!isRegistered) {
                             continueRegistration(userId, fullName, emailToCheck, telephone, password);
                           }
                         } else {
-                          isValidForm[3] = true;
                           continueRegistration(userId, fullName, emailToCheck, telephone, password);
                         }
                       }
@@ -273,7 +276,6 @@ public class UserActivity extends AppCompatActivity {
                     });
                   }
                 } else {
-                  isValidForm[3] = true;
                   continueRegistration(null, fullName, emailToCheck, telephone, password);
                 }
               }
@@ -284,64 +286,60 @@ public class UserActivity extends AppCompatActivity {
               }
             });
           }
+        } else {
+          edtHouseKey.setError("House key does not exist!");
+          edtHouseKey.requestFocus();
         }
       }
 
       @Override
       public void onCancelled(@NonNull DatabaseError error) {
-
       }
     });
-
   }
 
   private void continueRegistration(String userId, String fullName, String email, String telephone, String password) {
-    boolean allFieldsValid = true;
-    for (boolean isValid : isValidForm) {
-      Log.d("aaa", String.valueOf(isValid));
-      if (!isValid) {
-        allFieldsValid = false;
-        break;
-      }
+    String encryptPass = EncryptionUtils.encrypt(password);
+    if (bundle != null) {
+      writeNewUser(userId, fullName, email, telephone, encryptPass);
     }
-    if (allFieldsValid) {
-      Log.d("aaa", isValidForm.toString());
-      String encryptPass = EncryptionUtils.encrypt(password);
-
-      if (userId == null) {
-        userId = UUID.randomUUID().toString();
-        writeNewUser(userId, fullName, email, telephone, encryptPass);
-      }
-      Log.d("aaa", "continueRegistration()");
-      writeNewUserHouse(userId, fullName, email, telephone);
-      moveScreen(UserActivity.this, AdminActivity.class);
+    if (userId == null) {
+      userId = UUID.randomUUID().toString();
+      writeNewUser(userId, fullName, email, telephone, encryptPass);
     }
+    Log.d("aaa", "continueRegistration()");
+    writeNewUserHouse(userId, fullName, email, telephone);
+    moveScreen(UserActivity.this, AdminActivity.class);
   }
 
   public void writeNewUser(String userId, String name, String email, String telephone, String password) {
     name = Format.formatName(name);
     User user = new User(null, name, email, telephone, password);
-    usersRef.child(userId).setValue(user);
+    if (bundle != null) {
+      DatabaseReference userRef = db.getReference("users/" + userId);
+      userRef.setValue(user);
+    } else {
+      usersRef.child(userId).setValue(user);
+    }
   }
 
   public void writeNewUserHouse(String userId, String name, String email, String telephone) {
-    UserHouse userHouse = new UserHouse(userId, houseId, role);
-    usersHousesRef.child(UUID.randomUUID().toString()).setValue(userHouse);
-    Toast.makeText(UserActivity.this, "User added successfully!", Toast.LENGTH_LONG).show();
-    String password = edtPassword.getText().toString();
-    User user = new User(userId, name, email, telephone, password);
-    SharedUser.setUser(user);
+    UserHouse userHouse = new UserHouse(null, userId, houseId, role);
+    if (bundle != null) {
+      DatabaseReference userHouseRef = db.getReference("usersHouses/" + userHouseId);
+      userHouseRef.setValue(userHouse);
+      Toast.makeText(UserActivity.this, "Account successfully updated!", Toast.LENGTH_LONG).show();
+    } else {
+      usersHousesRef.child(UUID.randomUUID().toString()).setValue(userHouse);
+      String password = edtPassword.getText().toString();
+      Toast.makeText(UserActivity.this, "Account successfully created!", Toast.LENGTH_LONG).show();
+      User user = new User(userId, name, email, telephone, password);
+      SharedUser.setUser(user);
+    }
   }
 
   public void moveScreen(Activity currentScreen, Class<? extends Activity> nextScreenClass) {
     Intent intent = new Intent(currentScreen, nextScreenClass);
     startActivity(intent);
-  }
-
-  private void clearFocusFromInputField() {
-    View currentFocus = getCurrentFocus();
-    if (currentFocus instanceof EditText) {
-      currentFocus.clearFocus();
-    }
   }
 }
