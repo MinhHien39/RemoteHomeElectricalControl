@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,14 +17,17 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.remotehomeelectricalcontrolsystem.Model.SharedUser;
+import com.example.remotehomeelectricalcontrolsystem.Model.SharedUserHouse;
 import com.example.remotehomeelectricalcontrolsystem.Model.User;
 import com.example.remotehomeelectricalcontrolsystem.Model.UserHouse;
 import com.example.remotehomeelectricalcontrolsystem.Utils.EncryptionUtils;
 import com.example.remotehomeelectricalcontrolsystem.Utils.Format;
 import com.example.remotehomeelectricalcontrolsystem.Utils.InputValidator;
+import com.example.remotehomeelectricalcontrolsystem.Utils.NetworkChangeListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,10 +45,13 @@ public class UserActivity extends AppCompatActivity {
   MaterialToolbar topAppBar;
   Button btnAdd, btnDelete, btnUpdate;
   AutoCompleteTextView autoCompleteRole;
+  TextInputLayout layoutAutoComplete;
   String[] roles = new String[]{"admin", "host", "member"};
   ArrayAdapter<String> adapterRoles;
   String role, houseId, userId, userHouseId;
+  boolean isAdmin;
   Bundle bundle;
+  NetworkChangeListener networkChangeListener;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -55,38 +63,23 @@ public class UserActivity extends AppCompatActivity {
     bundle = getIntent().getExtras();
 
     if (bundle != null) {
-      userHouseId = bundle.getString("userHouseId");
-      userHouseRef = db.getReference("usersHouses/" + userHouseId);
-      userHouseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot userHouse) {
-          role = userHouse.child("role").getValue(String.class);
-          setRole(role);
-          houseId = userHouse.child("houseId").getValue(String.class);
-          userId = userHouse.child("userId").getValue(String.class);
-          userRef = db.getReference("users/" + userId);
-          houseRef = db.getReference("test1/" + houseId);
-          userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot user) {
-              edtFullName.setText(user.child("name").getValue(String.class));
-              edtEmail.setText(user.child("email").getValue(String.class));
-              edtTelephone.setText(user.child("tel").getValue(String.class));
-              String hashPass = user.child("password").getValue(String.class);
-              String password = EncryptionUtils.decrypt(hashPass);
-              edtPassword.setText(password);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-          });
+      isAdmin = bundle.getBoolean("isAdmin");
+      Log.d("aaa", "isAdmin: " + isAdmin);
+      if (!isAdmin) {
+        autoCompleteRole.setEnabled(false);
+        autoCompleteRole.setDropDownHeight(0);
+        topAppBar.setTitle("Member information");
+        btnAdd.setText("Add new member");
+        UserHouse userHouse = SharedUserHouse.getUserHouse();
+        if (userHouse != null) {
+          houseRef = db.getReference("test1/" + userHouse.getHouseId());
           houseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot house) {
-              String hashKey = house.child("houseKey").getValue(String.class);
+            public void onDataChange(@NonNull DataSnapshot userHouseSnapshot) {
+              String hashKey = userHouseSnapshot.child("houseKey").getValue(String.class);
               String houseKey = EncryptionUtils.decrypt(hashKey);
               edtHouseKey.setText(houseKey);
+              edtHouseKey.setEnabled(false);
             }
 
             @Override
@@ -94,12 +87,56 @@ public class UserActivity extends AppCompatActivity {
             }
           });
         }
+      }
+      userHouseId = bundle.getString("userHouseId");
+      if (userHouseId != null) {
+        userHouseRef = db.getReference("usersHouses/" + userHouseId);
+        userHouseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+          @Override
+          public void onDataChange(@NonNull DataSnapshot userHouse) {
+            role = userHouse.child("role").getValue(String.class);
+            setRole(role);
+            houseId = userHouse.child("houseId").getValue(String.class);
+            userId = userHouse.child("userId").getValue(String.class);
+            userRef = db.getReference("users/" + userId);
+            houseRef = db.getReference("test1/" + houseId);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+              @Override
+              public void onDataChange(@NonNull DataSnapshot user) {
+                edtFullName.setText(user.child("name").getValue(String.class));
+                edtEmail.setText(user.child("email").getValue(String.class));
+                edtTelephone.setText(user.child("tel").getValue(String.class));
+                String hashPass = user.child("password").getValue(String.class);
+                String password = EncryptionUtils.decrypt(hashPass);
+                edtPassword.setText(password);
+              }
 
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-        }
-      });
-      showUpdateDelete();
+              @Override
+              public void onCancelled(@NonNull DatabaseError error) {
+              }
+            });
+            houseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+              @Override
+              public void onDataChange(@NonNull DataSnapshot house) {
+                String hashKey = house.child("houseKey").getValue(String.class);
+                String houseKey = EncryptionUtils.decrypt(hashKey);
+                edtHouseKey.setText(houseKey);
+              }
+
+              @Override
+              public void onCancelled(@NonNull DatabaseError error) {
+              }
+            });
+          }
+
+          @Override
+          public void onCancelled(@NonNull DatabaseError error) {
+          }
+        });
+        showUpdateDelete();
+      } else {
+        showSubmit();
+      }
     } else {
       showSubmit();
     }
@@ -120,7 +157,8 @@ public class UserActivity extends AppCompatActivity {
                 }
                 userHouseRef.removeValue((error, ref) -> {
                   Toast.makeText(UserActivity.this, "Delete user success!", Toast.LENGTH_SHORT).show();
-                  moveScreen(UserActivity.this, AdminActivity.class);
+                  if (isAdmin) moveScreen(UserActivity.this, AdminActivity.class);
+                  else moveToMainActivity();
                 });
               }
 
@@ -131,9 +169,7 @@ public class UserActivity extends AppCompatActivity {
             });
             dialogInterface.dismiss();
           })
-          .setNegativeButton("No", (dialogInterface, i) -> {
-            dialogInterface.dismiss();
-          });
+          .setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss());
 
       dialog.show();
     });
@@ -165,9 +201,11 @@ public class UserActivity extends AppCompatActivity {
     linearUpdateDelete = findViewById(R.id.linearUpdateDelete);
     linearSubmit = findViewById(R.id.linearSubmit);
     autoCompleteRole = findViewById(R.id.autoCompleteRole);
+    layoutAutoComplete = findViewById(R.id.layoutAutoComplete);
     adapterRoles = new ArrayAdapter<>(this, R.layout.list_item, roles);
     autoCompleteRole.setAdapter(adapterRoles);
     autoCompleteRole.setText(adapterRoles.getItem(2), false);
+    networkChangeListener = new NetworkChangeListener();
   }
 
   public void setRole(@NonNull String role) {
@@ -300,7 +338,7 @@ public class UserActivity extends AppCompatActivity {
 
   private void continueRegistration(String userId, String fullName, String email, String telephone, String password) {
     String encryptPass = EncryptionUtils.encrypt(password);
-    if (bundle != null) {
+    if (userHouseId != null) {
       writeNewUser(userId, fullName, email, telephone, encryptPass);
     }
     if (userId == null) {
@@ -309,13 +347,14 @@ public class UserActivity extends AppCompatActivity {
     }
     Log.d("aaa", "continueRegistration()");
     writeNewUserHouse(userId, fullName, email, telephone);
-    moveScreen(UserActivity.this, AdminActivity.class);
+    if (isAdmin) moveScreen(UserActivity.this, AdminActivity.class);
+    else moveToMainActivity();
   }
 
   public void writeNewUser(String userId, String name, String email, String telephone, String password) {
     name = Format.formatName(name);
     User user = new User(null, name, email, telephone, password);
-    if (bundle != null) {
+    if (userHouseId != null) {
       DatabaseReference userRef = db.getReference("users/" + userId);
       userRef.setValue(user);
     } else {
@@ -325,7 +364,7 @@ public class UserActivity extends AppCompatActivity {
 
   public void writeNewUserHouse(String userId, String name, String email, String telephone) {
     UserHouse userHouse = new UserHouse(null, userId, houseId, role);
-    if (bundle != null) {
+    if (userHouseId != null) {
       DatabaseReference userHouseRef = db.getReference("usersHouses/" + userHouseId);
       userHouseRef.setValue(userHouse);
       Toast.makeText(UserActivity.this, "Account successfully updated!", Toast.LENGTH_LONG).show();
@@ -341,5 +380,25 @@ public class UserActivity extends AppCompatActivity {
   public void moveScreen(Activity currentScreen, Class<? extends Activity> nextScreenClass) {
     Intent intent = new Intent(currentScreen, nextScreenClass);
     startActivity(intent);
+  }
+
+  public void moveToMainActivity() {
+    Bundle bundle1 = new Bundle();
+    Intent intent = new Intent(UserActivity.this, MainActivity.class);
+    bundle1.putBoolean("hasChange", true);
+    intent.putExtras(bundle1);
+    startActivity(intent);
+  }
+
+  @Override
+  protected void onStart() {
+    IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+    registerReceiver(networkChangeListener, filter);
+    super.onStart();
+  }
+  @Override
+  protected void onStop() {
+    unregisterReceiver(networkChangeListener);
+    super.onStop();
   }
 }

@@ -6,12 +6,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
 import com.example.remotehomeelectricalcontrolsystem.Adapter.RoomAdapter;
 import com.example.remotehomeelectricalcontrolsystem.Model.Devices;
+import com.example.remotehomeelectricalcontrolsystem.Utils.NetworkChangeListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +30,7 @@ public class RoomActivity extends AppCompatActivity {
     RecyclerView rec_device;
     TextView txtHumidity;
     TextView txtTemperature;
+    NetworkChangeListener networkChangeListener = new NetworkChangeListener();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,5 +83,16 @@ public class RoomActivity extends AppCompatActivity {
     public void updateDeviceView() {
         adapter.updateDeviceList(deviceList);
         adapter.notifyDataSetChanged();
+    }
+    @Override
+    protected void onStart() {
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkChangeListener, filter);
+        super.onStart();
+    }
+    @Override
+    protected void onStop() {
+        unregisterReceiver(networkChangeListener);
+        super.onStop();
     }
 }

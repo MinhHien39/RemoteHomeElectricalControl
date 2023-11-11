@@ -4,10 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import com.example.remotehomeelectricalcontrolsystem.Model.SharedUser;
 import com.example.remotehomeelectricalcontrolsystem.Model.User;
 import com.example.remotehomeelectricalcontrolsystem.Utils.EncryptionUtils;
 import com.example.remotehomeelectricalcontrolsystem.Utils.InputValidator;
+import com.example.remotehomeelectricalcontrolsystem.Utils.NetworkChangeListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
   CheckBox cbRememberMe;
   Button btnLogin;
   User user = null;
+  NetworkChangeListener networkChangeListener;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
     btnLogin = findViewById(R.id.btnLogin);
     db = FirebaseDatabase.getInstance();
     usersRef = db.getReference("users");
+    networkChangeListener = new NetworkChangeListener();
   }
 
   public void saveCredentials(String email, String password) {
@@ -174,5 +178,16 @@ public class LoginActivity extends AppCompatActivity {
       edtEmail.setText(user.getEmail());
       edtPassword.setText(user.getPassword());
     }
+  }
+  @Override
+  protected void onStart() {
+    IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+    registerReceiver(networkChangeListener, filter);
+    super.onStart();
+  }
+  @Override
+  protected void onStop() {
+    unregisterReceiver(networkChangeListener);
+    super.onStop();
   }
 }

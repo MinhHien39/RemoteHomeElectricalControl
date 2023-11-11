@@ -1,6 +1,8 @@
 package com.example.remotehomeelectricalcontrolsystem;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.remotehomeelectricalcontrolsystem.Adapter.FloorAdapter;
 import com.example.remotehomeelectricalcontrolsystem.Model.Devices;
 import com.example.remotehomeelectricalcontrolsystem.Model.Room;
+import com.example.remotehomeelectricalcontrolsystem.Utils.NetworkChangeListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +31,7 @@ public class FloorActivity extends AppCompatActivity {
   FloorAdapter floorAdapter;
   List<Room> roomList;
   List<Devices> list;
+  NetworkChangeListener networkChangeListener = new NetworkChangeListener();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -94,5 +98,16 @@ public class FloorActivity extends AppCompatActivity {
     floorAdapter.updateListRoom(roomList);
     floorAdapter.notifyDataSetChanged();
     rec_room_floor.setAdapter(floorAdapter);
+  }
+  @Override
+  protected void onStart() {
+    IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+    registerReceiver(networkChangeListener, filter);
+    super.onStart();
+  }
+  @Override
+  protected void onStop() {
+    unregisterReceiver(networkChangeListener);
+    super.onStop();
   }
 }

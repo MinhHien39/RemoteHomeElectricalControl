@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:gravity="center"
+  android:padding="20dp"
+  android:orientation="vertical">
+
+  <ImageView
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:layout_gravity="center"
+    android:contentDescription="Disconnected"
+    android:src="@drawable/ic_disconnected" />
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Oops"
+    android:textSize="40sp"
+    android:gravity="center"/>
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="No internet Connection"
+    android:textSize="25sp"
+    android:gravity="center"/>
+  <TextView
+    android:layout_width="wrap_content"
+    android:text="Please check your connection"
+    android:textSize="18sp"
+    android:layout_height="wrap_content"/>
+  <Button
+    android:id="@+id/btnRetry"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Retry"
+    android:layout_marginTop="30dp"
+    app:shapeAppearance="?attr/shapeAppearanceSmallComponent"
+    android:textSize="18sp"
+    android:backgroundTint="@color/my_app_primary" />
+</LinearLayout>

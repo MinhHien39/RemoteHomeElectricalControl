@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
@@ -15,6 +17,7 @@ import com.example.remotehomeelectricalcontrolsystem.Adapter.UserHouseAdapter;
 import com.example.remotehomeelectricalcontrolsystem.Model.User;
 import com.example.remotehomeelectricalcontrolsystem.Model.UserHouse;
 import com.example.remotehomeelectricalcontrolsystem.Utils.EncryptionUtils;
+import com.example.remotehomeelectricalcontrolsystem.Utils.NetworkChangeListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +36,7 @@ public class AdminActivity extends AppCompatActivity {
   FirebaseDatabase db;
   DatabaseReference usersRef, usersHousesRef;
   FloatingActionButton fab;
+  NetworkChangeListener networkChangeListener;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +78,7 @@ public class AdminActivity extends AppCompatActivity {
       Bundle bundle = new Bundle();
       String userId = users.get(i).getUserId();
       Intent intent = new Intent(AdminActivity.this, UserActivity.class);
+      bundle.putBoolean("isAdmin", true);
       usersHousesRef.orderByChild("userId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -124,5 +129,17 @@ public class AdminActivity extends AppCompatActivity {
     usersRef = db.getReference("users");
     usersHousesRef = db.getReference("usersHouses");
     fab = findViewById(R.id.fab);
+    networkChangeListener = new NetworkChangeListener();
+  }
+  @Override
+  protected void onStart() {
+    IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+    registerReceiver(networkChangeListener, filter);
+    super.onStart();
+  }
+  @Override
+  protected void onStop() {
+    unregisterReceiver(networkChangeListener);
+    super.onStop();
   }
 }

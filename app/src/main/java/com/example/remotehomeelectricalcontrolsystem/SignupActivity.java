@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -17,6 +19,7 @@ import com.example.remotehomeelectricalcontrolsystem.Utils.EncryptionUtils;
 import com.example.remotehomeelectricalcontrolsystem.Utils.Format;
 import com.example.remotehomeelectricalcontrolsystem.Utils.InputValidator;
 import com.example.remotehomeelectricalcontrolsystem.Model.User;
+import com.example.remotehomeelectricalcontrolsystem.Utils.NetworkChangeListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +36,7 @@ public class SignupActivity extends AppCompatActivity {
   TextView txtLogin;
   Button btnSignUp;
   String role, houseId;
+  NetworkChangeListener networkChangeListener;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +76,7 @@ public class SignupActivity extends AppCompatActivity {
     usersRef = db.getReference("users");
     housesRef = db.getReference("test1");
     usersHousesRef = db.getReference("usersHouses");
+    networkChangeListener = new NetworkChangeListener();
   }
 
   public boolean checkAllFields(String name, String email, String telephone, String houseKey, String password) {
@@ -202,5 +207,16 @@ public class SignupActivity extends AppCompatActivity {
   public void moveScreen(Activity currentScreen, Class<? extends Activity> nextScreenClass) {
     Intent intent = new Intent(currentScreen, nextScreenClass);
     startActivity(intent);
+  }
+  @Override
+  protected void onStart() {
+    IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+    registerReceiver(networkChangeListener, filter);
+    super.onStart();
+  }
+  @Override
+  protected void onStop() {
+    unregisterReceiver(networkChangeListener);
+    super.onStop();
   }
 }

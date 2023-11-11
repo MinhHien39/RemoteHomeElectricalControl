@@ -7,20 +7,53 @@
   android:background="@color/white"
   tools:context=".MainActivity">
 
+  <LinearLayout
+    android:id="@+id/layoutTopAppBar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    android:weightSum="1"
+    >
+    <com.google.android.material.appbar.AppBarLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@color/my_app_primary"
+      app:layout_constraintTop_toTopOf="parent"
+      android:layout_weight="1"
+      >
+
+      <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:title="Home"
+        app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <ImageButton
+      android:id="@+id/imgBtn"
+      android:contentDescription="More"
+      android:layout_weight="0"
+      android:src="@drawable/ic_more"
+      android:layout_width="60dp"
+      android:layout_height="match_parent"
+      android:background="@color/my_app_primary"
+      />
+  </LinearLayout>
+
   <FrameLayout
     android:id="@+id/frame_layout"
     android:layout_width="0dp"
     android:layout_height="0dp"
     android:background="#EFF1F5"
-    app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+    app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-
-    ></FrameLayout>
+    app:layout_constraintTop_toBottomOf="@+id/layoutTopAppBar" />
 
   <com.google.android.material.bottomnavigation.BottomNavigationView
-    android:id="@+id/bottomNavigationView"
+    android:id="@+id/bottomNavigation"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:textAlignment="center"
