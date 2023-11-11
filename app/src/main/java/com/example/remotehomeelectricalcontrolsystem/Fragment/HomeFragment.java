@@ -59,7 +59,7 @@ public class HomeFragment extends Fragment {
       String pathHouse = "/test1/" + houseId;
       DatabaseReference houseRef = database.getReference(pathHouse + "/floors");
       homeAdapter.setHousePath(pathHouse);
-      houseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+      houseRef.orderByChild("name").addListenerForSingleValueEvent(new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
           for (DataSnapshot dataFloor : snapshot.getChildren()) {
@@ -67,7 +67,6 @@ public class HomeFragment extends Fragment {
             String floorName = dataFloor.child("name").getValue(String.class);
             floorList.add(new Floor(floorId, floorName));
           }
-          sortByFloorName();
           updateListView();
         }
 
@@ -80,9 +79,6 @@ public class HomeFragment extends Fragment {
 
 
     return root;
-  }
-  public void sortByFloorName() {
-    Collections.sort(floorList, Comparator.comparing(Floor::getName));
   }
   public void updateListView() {
     homeAdapter.updateListFloor(floorList);

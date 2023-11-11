@@ -6,9 +6,9 @@
         android:title="Home"
         />
     <item
-        android:id="@+id/nav_profile"
-        android:icon="@drawable/material_symbols_account_circle"
-        android:title="Profile"
+        android:id="@+id/nav_members"
+        android:icon="@drawable/ic_members"
+        android:title="Members"
         />
 
 </menu>
