@@ -129,6 +129,7 @@ public class UserActivity extends AppCompatActivity {
             });
           }
 
+
           @Override
           public void onCancelled(@NonNull DatabaseError error) {
           }
@@ -140,9 +141,7 @@ public class UserActivity extends AppCompatActivity {
     } else {
       showSubmit();
     }
-    topAppBar.setNavigationOnClickListener(view -> {
-      finish();
-    });
+    topAppBar.setNavigationOnClickListener(view -> finish());
     btnAdd.setOnClickListener(v -> handleSubmit());
     btnUpdate.setOnClickListener(v -> handleSubmit());
     btnDelete.setOnClickListener(view -> {
@@ -156,7 +155,7 @@ public class UserActivity extends AppCompatActivity {
                   userRef.removeValue();
                 }
                 userHouseRef.removeValue((error, ref) -> {
-                  Toast.makeText(UserActivity.this, "Delete user success!", Toast.LENGTH_SHORT).show();
+                  Toast.makeText(UserActivity.this, "Deleted user successfully!", Toast.LENGTH_SHORT).show();
                   if (isAdmin) moveScreen(UserActivity.this, AdminActivity.class);
                   else moveToMainActivity();
                 });

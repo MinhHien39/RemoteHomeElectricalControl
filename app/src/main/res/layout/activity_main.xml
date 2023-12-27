@@ -11,35 +11,43 @@
     android:id="@+id/layoutTopAppBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layout_constraintTop_toTopOf="parent"
     android:weightSum="1"
-    >
+    app:layout_constraintTop_toTopOf="parent">
+
     <com.google.android.material.appbar.AppBarLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:background="@color/my_app_primary"
-      app:layout_constraintTop_toTopOf="parent"
       android:layout_weight="1"
-      >
+      android:background="@color/my_app_primary"
+      app:layout_constraintTop_toTopOf="parent">
 
       <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
-        android:layout_weight="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         app:title="Home"
         app:titleTextColor="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
     <ImageButton
-      android:id="@+id/imgBtn"
-      android:contentDescription="More"
-      android:layout_weight="0"
-      android:src="@drawable/ic_more"
-      android:layout_width="60dp"
+      android:id="@+id/imgMic"
+      android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:background="@color/my_app_primary"
-      />
+      android:paddingLeft="10dp"
+      android:paddingRight="10dp"
+      android:layout_gravity="center"
+      android:src="@drawable/ic_mic" />
+
+    <ImageButton
+      android:id="@+id/imgBtn"
+      android:layout_width="40dp"
+      android:layout_height="match_parent"
+      android:background="@color/my_app_primary"
+      android:contentDescription="More"
+      android:src="@drawable/ic_more" />
   </LinearLayout>
 
   <FrameLayout
@@ -57,12 +65,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:textAlignment="center"
+    app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView"
     app:itemIconSize="30dp"
     app:itemIconTint="@color/white"
-    app:itemTextColor="@color/white"
     app:itemTextAppearanceActive="@color/active_color"
-    app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView"
     app:itemTextAppearanceInactive="@color/active_color"
+    app:itemTextColor="@color/white"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"

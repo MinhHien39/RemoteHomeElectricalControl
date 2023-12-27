@@ -2,10 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/parentLayout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".UserActivity">
+  tools:context=".ChangePasswordActivity">
 
   <com.google.android.material.appbar.AppBarLayout
     android:id="@+id/layoutTopAppBar"
@@ -18,7 +17,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:navigationIcon="@drawable/ic_left_arrow"
-      app:title="User information"
+      app:title="Profile"
       app:titleTextColor="@color/white" />
 
   </com.google.android.material.appbar.AppBarLayout>
@@ -50,6 +49,7 @@
     android:layout_marginTop="24dp"
     android:layout_marginEnd="32dp"
     android:hint="Email"
+    android:enabled="false"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0.0"
     app:layout_constraintStart_toStartOf="parent"
@@ -82,27 +82,6 @@
   </com.google.android.material.textfield.TextInputLayout>
 
   <com.google.android.material.textfield.TextInputLayout
-    android:id="@+id/layoutHouseKey"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="32dp"
-    android:layout_marginTop="24dp"
-    android:layout_marginEnd="32dp"
-    android:hint="House key"
-    app:endIconMode="password_toggle"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/layoutTel">
-
-    <com.google.android.material.textfield.TextInputEditText
-      android:id="@+id/edtHouseKey"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:inputType="textPassword" />
-
-  </com.google.android.material.textfield.TextInputLayout>
-
-  <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/layoutPassword"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -111,9 +90,10 @@
     android:layout_marginEnd="32dp"
     android:hint="Password"
     app:endIconMode="password_toggle"
+    android:enabled="false"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/layoutHouseKey">
+    app:layout_constraintTop_toBottomOf="@+id/layoutTel">
 
     <com.google.android.material.textfield.TextInputEditText
       android:id="@+id/edtPassword"
@@ -122,96 +102,18 @@
       android:inputType="textPassword" />
   </com.google.android.material.textfield.TextInputLayout>
 
-  <LinearLayout
-    android:id="@+id/linearRole"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="32dp"
-    android:layout_marginTop="24dp"
-    android:layout_marginEnd="32dp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/layoutPassword">
-
-    <TextView
-      android:layout_width="0dp"
-      android:layout_height="match_parent"
-      android:layout_weight="1"
-      android:gravity="center_vertical"
-      android:text="Role:"
-      android:textSize="18sp" />
-
-    <com.google.android.material.textfield.TextInputLayout
-      android:id="@+id/layoutAutoComplete"
-      style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-      android:layout_width="200dp"
-      android:layout_height="wrap_content"
-      android:hint="Select a role"
-      app:boxBackgroundColor="@color/white"
-      app:layout_constraintEnd_toEndOf="parent">
-
-      <AutoCompleteTextView
-        android:id="@+id/autoCompleteRole"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="none" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-  </LinearLayout>
-
-  <LinearLayout
-    android:id="@+id/linearUpdateDelete"
+  <Button
+    android:id="@+id/btnSave"
+    style="@style/Widget.MaterialComponents.Button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="32dp"
     android:layout_marginTop="32dp"
     android:layout_marginEnd="32dp"
-    android:visibility="invisible"
+    android:text="Save information"
+    android:textColor="@android:color/white"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/linearRole">
+    app:layout_constraintTop_toBottomOf="@id/layoutPassword" />
 
-    <Button
-      android:id="@+id/btnUpdate"
-      style="@style/Widget.MaterialComponents.Button"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:text="Update" />
-
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:width="20dp" />
-
-    <Button
-      android:id="@+id/btnDelete"
-      style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:text="Delete"
-      android:textColor="@android:color/holo_red_light" />
-  </LinearLayout>
-
-  <LinearLayout
-    android:id="@+id/linearSubmit"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="32dp"
-    android:layout_marginTop="32dp"
-    android:layout_marginEnd="32dp"
-    android:visibility="invisible"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/linearRole">
-
-    <Button
-      android:id="@+id/btnAdd"
-      style="@style/Widget.MaterialComponents.Button"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:text="Add new user"
-      android:textColor="@android:color/white" />
-  </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

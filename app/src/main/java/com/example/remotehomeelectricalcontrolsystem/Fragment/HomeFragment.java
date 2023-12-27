@@ -11,12 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.remotehomeelectricalcontrolsystem.Adapter.HomeAdapter;
 
 import com.example.remotehomeelectricalcontrolsystem.Model.Floor;
-import com.example.remotehomeelectricalcontrolsystem.Model.Room;
 import com.example.remotehomeelectricalcontrolsystem.R;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,8 +27,6 @@ import com.google.firebase.database.ValueEventListener;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -34,7 +34,9 @@ public class HomeFragment extends Fragment {
 
   RecyclerView rec_home;
   HomeAdapter homeAdapter;
+  TextView txtTemp, txtHumid;
   List<Floor> floorList;
+  FirebaseDatabase db;
 
   public static HomeFragment newInstance() {
     HomeFragment fragment = new HomeFragment();
@@ -47,19 +49,48 @@ public class HomeFragment extends Fragment {
     // Inflate the layout for this fragment
     View root = inflater.inflate(R.layout.fragment_home, container, false);
     FragmentManager fm = this.getChildFragmentManager();
-    rec_home = root.findViewById(R.id.rec_floor);
-    rec_home.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
+
+    init(root);
+
     rec_home.scrollToPosition(1000);
     homeAdapter = new HomeAdapter();
     floorList = new ArrayList<>();
     Bundle bundle = this.getArguments();
     if (bundle != null) {
       String houseId = bundle.getString("houseId");
-      FirebaseDatabase database = FirebaseDatabase.getInstance();
       String pathHouse = "/test1/" + houseId;
-      DatabaseReference houseRef = database.getReference(pathHouse + "/floors");
+      DatabaseReference floorsRef = db.getReference(pathHouse + "/floors");
       homeAdapter.setHousePath(pathHouse);
-      houseRef.orderByChild("name").addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+      floorsRef.addValueEventListener(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+          float sumTemp = 0, sumHumi = 0;
+          int count = 0;
+          for (DataSnapshot dataFloor : snapshot.getChildren()) {
+            for(DataSnapshot dataRoom : dataFloor.child("rooms").getChildren()) {
+              for(DataSnapshot dataDHT : dataRoom.child("DHT").getChildren()) {
+                float temp = dataDHT.child("temperature").getValue(Float.class);
+                float humid = dataDHT.child("humidity").getValue(Float.class);
+                sumTemp += temp;
+                sumHumi += humid;
+                count++;
+              }
+            }
+          }
+
+          txtTemp.setText(String.valueOf(sumTemp/count) + "°C");
+          txtHumid.setText(String.valueOf(sumHumi/count) + "%");
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+      });
+
+      floorsRef.orderByChild("name").addListenerForSingleValueEvent(new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
           for (DataSnapshot dataFloor : snapshot.getChildren()) {
@@ -80,6 +111,15 @@ public class HomeFragment extends Fragment {
 
     return root;
   }
+
+  private void init(View root) {
+    rec_home = root.findViewById(R.id.rec_floor);
+    rec_home.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
+    txtTemp = root.findViewById(R.id.txtTemp);
+    txtHumid = root.findViewById(R.id.txtHumid);
+    db = FirebaseDatabase.getInstance();
+  }
+
   public void updateListView() {
     homeAdapter.updateListFloor(floorList);
     homeAdapter.notifyDataSetChanged();

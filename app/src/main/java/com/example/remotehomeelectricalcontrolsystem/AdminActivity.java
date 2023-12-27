@@ -6,18 +6,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.example.remotehomeelectricalcontrolsystem.Adapter.UserAdapter;
 import com.example.remotehomeelectricalcontrolsystem.Adapter.UserHouseAdapter;
+import com.example.remotehomeelectricalcontrolsystem.Model.SharedUser;
+import com.example.remotehomeelectricalcontrolsystem.Model.SharedUserHouse;
 import com.example.remotehomeelectricalcontrolsystem.Model.User;
 import com.example.remotehomeelectricalcontrolsystem.Model.UserHouse;
 import com.example.remotehomeelectricalcontrolsystem.Utils.EncryptionUtils;
 import com.example.remotehomeelectricalcontrolsystem.Utils.NetworkChangeListener;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,6 +35,7 @@ import java.util.ArrayList;
 
 public class AdminActivity extends AppCompatActivity {
   ListView lv;
+  ImageButton imgMore;
   ArrayList<User> users;
   ArrayList<UserHouse> listUserHouse;
   UserAdapter adapter;
@@ -68,6 +75,8 @@ public class AdminActivity extends AppCompatActivity {
 
       }
     });
+
+    imgMore.setOnClickListener(view -> showPopup());
 
     fab.setOnClickListener(view -> {
       Intent intent = new Intent(AdminActivity.this, UserActivity.class);
@@ -123,6 +132,7 @@ public class AdminActivity extends AppCompatActivity {
 
   public void init() {
     lv = findViewById(R.id.lv);
+    imgMore = findViewById(R.id.imgBtn);
     users = new ArrayList<>();
     listUserHouse = new ArrayList<>();
     db = FirebaseDatabase.getInstance();
@@ -131,6 +141,51 @@ public class AdminActivity extends AppCompatActivity {
     fab = findViewById(R.id.fab);
     networkChangeListener = new NetworkChangeListener();
   }
+
+  public void showPopup() {
+    PopupMenu popup = new PopupMenu(this, imgMore);
+    popup.getMenuInflater().inflate(R.menu.top_app_bar, popup.getMenu());
+    popup.setOnMenuItemClickListener(menuItem -> {
+      int itemId = menuItem.getItemId();
+      if (itemId == R.id.action_profile) {
+        Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
+      } else if (itemId == R.id.action_contact) {
+        Intent intent = new Intent(AdminActivity.this, ContactActivity.class);
+        startActivity(intent);
+      }
+      else if (itemId == R.id.action_change_password) {
+        Intent intent = new Intent(AdminActivity.this, ChangePasswordActivity.class);
+        startActivity(intent);
+      }
+      else if (itemId == R.id.action_logout) {
+        handleLogout();
+      }
+      return false;
+    });
+    popup.show();
+  }
+
+  private void clearData() {
+    SharedUserHouse.setUserHouse(null);
+    SharedUser.setUser(null);
+    SharedPreferences sharedPreferences = getSharedPreferences("house", MODE_PRIVATE);
+    SharedPreferences.Editor editor = sharedPreferences.edit();
+    editor.clear();
+    editor.apply();
+  }
+
+  private void handleLogout() {
+    MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(AdminActivity.this).setTitle("Confirm logout").setMessage("Are you sure to log out?").setPositiveButton("Log out", (dialogInterface, i) -> {
+      clearData();
+      Toast.makeText(AdminActivity.this, "Log out of account successfully!", Toast.LENGTH_SHORT).show();
+      Intent intent = new Intent(AdminActivity.this, LoginActivity.class);
+      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+      startActivity(intent);
+      finish();
+    }).setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
+    dialog.show();
+  }
+
   @Override
   protected void onStart() {
     IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);

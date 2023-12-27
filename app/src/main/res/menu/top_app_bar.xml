@@ -5,8 +5,8 @@
     android:id="@+id/action_profile"
     android:title="Profile" />
   <item
-    android:id="@+id/action_language"
-    android:title="Change language" />
+    android:id="@+id/action_change_password"
+    android:title="Change password" />
   <item
     android:id="@+id/action_contact"
     android:title="Contact" />

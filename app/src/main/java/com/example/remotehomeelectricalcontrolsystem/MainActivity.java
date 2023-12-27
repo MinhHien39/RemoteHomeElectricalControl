@@ -1,21 +1,30 @@
 package com.example.remotehomeelectricalcontrolsystem;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResult;
 
 import com.example.remotehomeelectricalcontrolsystem.Adapter.UserHouseAdapter;
 import com.example.remotehomeelectricalcontrolsystem.Fragment.HomeFragment;
@@ -41,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
   private DatabaseReference usersRef, housesRef, usersHousesRef;
   FrameLayout frameLayout;
   Fragment homeFragment, membersFragment;
-  ImageButton imgBtn;
+  ImageButton imgMore;
   MaterialToolbar topAppBar;
   ArrayList<UserHouse> listUserHouse;
   UserHouseAdapter userHouseAdapter;
@@ -52,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-
     init();
 
     UserHouse userHouse = SharedUserHouse.getUserHouse();
@@ -74,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
               String userHouseId = userHouse.getKey();
               String role = userHouse.child("role").getValue(String.class).toString();
               String houseId = userHouse.child("houseId").getValue(String.class).toString();
+
+              showHouseName(houseId);
+
               if (snapshot.getChildrenCount() > 1) {
                 showHouseSelectionDialog(user.getUserId());
                 break;
@@ -85,9 +96,12 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                   initViews(savedInstanceState, houseId, role);
                   SharedUserHouse.setUserHouse(new UserHouse(userHouseId, user.getUserId(), houseId, role));
+                  if (role.equals("host")) {
+                    Intent serviceIntent = new Intent(MainActivity.this, BackgroundService.class);
+                    startService(serviceIntent);
+                  }
                 }
               }
-              Log.d("aaa", "count: " + snapshot.getChildrenCount());
             }
           }
 
@@ -102,29 +116,50 @@ public class MainActivity extends AppCompatActivity {
         finish();
       }
     }
-
-    imgBtn.setOnClickListener(view -> showPopup());
+    imgMore.setOnClickListener(view -> showPopup());
   }
+
 
   public void init() {
     db = FirebaseDatabase.getInstance();
     usersHousesRef = db.getReference("usersHouses");
     homeFragment = HomeFragment.newInstance();
     membersFragment = MembersFragment.newInstance();
-    imgBtn = findViewById(R.id.imgBtn);
+    imgMore = findViewById(R.id.imgBtn);
     topAppBar = findViewById(R.id.topAppBar);
     listUserHouse = new ArrayList<>();
     networkChangeListener = new NetworkChangeListener();
   }
 
+  private void showHouseName(String houseId) {
+    DatabaseReference houseNameRef = db.getReference("test1/" + houseId + "/name");
+    houseNameRef.get().addOnCompleteListener(task -> {
+      if (!task.isSuccessful()) {
+        Toast.makeText(MainActivity.this, "Get data error", Toast.LENGTH_SHORT).show();
+      } else {
+        String houseName = task.getResult().getValue(String.class);
+        topAppBar.setTitle(houseName);
+      }
+    });
+  }
+
   public void showPopup() {
-    PopupMenu popup = new PopupMenu(this, imgBtn);
+    PopupMenu popup = new PopupMenu(this, imgMore);
     popup.getMenuInflater().inflate(R.menu.top_app_bar, popup.getMenu());
     popup.setOnMenuItemClickListener(menuItem -> {
       int itemId = menuItem.getItemId();
       if (itemId == R.id.action_profile) {
-        Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
-      } else if (itemId == R.id.action_logout) {
+        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+        startActivity(intent);
+      } else if (itemId == R.id.action_contact) {
+        Intent intent = new Intent(MainActivity.this, ContactActivity.class);
+        startActivity(intent);
+      }
+      else if (itemId == R.id.action_change_password) {
+        Intent intent = new Intent(MainActivity.this, ChangePasswordActivity.class);
+        startActivity(intent);
+      }
+      else if (itemId == R.id.action_logout) {
         handleLogout();
       }
       return false;
@@ -132,17 +167,24 @@ public class MainActivity extends AppCompatActivity {
     popup.show();
   }
 
+  private void clearData() {
+    SharedUserHouse.setUserHouse(null);
+    SharedUser.setUser(null);
+    SharedPreferences sharedPreferences = getSharedPreferences("house", MODE_PRIVATE);
+    SharedPreferences.Editor editor = sharedPreferences.edit();
+    editor.clear();
+    editor.apply();
+  }
+
   private void handleLogout() {
-    MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(MainActivity.this)
-        .setTitle("Confirm logout")
-        .setMessage("Are you sure to log out?")
-        .setPositiveButton("Log out", (dialogInterface, i) -> {
-          Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-          intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-          startActivity(intent);
-          finish();
-        })
-        .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
+    MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(MainActivity.this).setTitle("Confirm logout").setMessage("Are you sure to log out?").setPositiveButton("Log out", (dialogInterface, i) -> {
+      clearData();
+      Toast.makeText(MainActivity.this, "Log out of account successfully!", Toast.LENGTH_SHORT).show();
+      Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+      startActivity(intent);
+      finish();
+    }).setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
     dialog.show();
   }
 
@@ -183,8 +225,7 @@ public class MainActivity extends AppCompatActivity {
   public void initViews(Bundle savedInstanceState, String houseId, String userRole) {
     bottomNavigation = findViewById(R.id.bottomNavigation);
     if (savedInstanceState == null) {
-      getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
-          .replace(R.id.frame_layout, HomeFragment.class, null).commit();
+      getSupportFragmentManager().beginTransaction().setReorderingAllowed(true).replace(R.id.frame_layout, HomeFragment.class, null).commit();
     }
     Bundle bundle = new Bundle();
     bundle.putString("houseId", houseId);
@@ -195,8 +236,7 @@ public class MainActivity extends AppCompatActivity {
     if (bundle1 != null) {
       Boolean hasChange = bundle1.getBoolean("hasChange");
       if (hasChange) {
-        getSupportFragmentManager().beginTransaction()
-            .replace(R.id.frame_layout, membersFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, membersFragment).commit();
         membersFragment.setArguments(bundle);
         topAppBar.setTitle("Manage members");
       }
@@ -213,14 +253,12 @@ public class MainActivity extends AppCompatActivity {
       // Set up the bottom navigation items and listener
       bottomNavigation.setOnItemSelectedListener(item -> {
         if (item.getItemId() == R.id.nav_home) {
-          getSupportFragmentManager().beginTransaction()
-              .replace(R.id.frame_layout, homeFragment).commit();
+          getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, homeFragment).commit();
           homeFragment.setArguments(bundle);
           topAppBar.setTitle("Home");
           return true;
         } else if (item.getItemId() == R.id.nav_members) {
-          getSupportFragmentManager().beginTransaction()
-              .replace(R.id.frame_layout, membersFragment).commit();
+          getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, membersFragment).commit();
           membersFragment.setArguments(bundle);
           topAppBar.setTitle("Manage members");
           return true;
@@ -230,12 +268,14 @@ public class MainActivity extends AppCompatActivity {
       });
     }
   }
+
   @Override
   protected void onStart() {
     IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
     registerReceiver(networkChangeListener, filter);
     super.onStart();
   }
+
   @Override
   protected void onStop() {
     unregisterReceiver(networkChangeListener);

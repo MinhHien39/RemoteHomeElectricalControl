@@ -6,6 +6,7 @@
   <color name="teal_200">#FF03DAC5</color>
   <color name="teal_700">#FF018786</color>
   <color name="black">#FF000000</color>
+  <color name="warn">#FFAE42</color>
   <color name="white">#FFFFFFFF</color>
   <color name="active_color">#FF8A65</color>
   <color name="bottom_navigate">#999DA1</color>
@@ -39,6 +40,7 @@
   <color name="colorOnTertiaryFixed">@android:color/system_accent3_900</color>
   <color name="colorOnTertiaryFixedVariant">@android:color/system_accent3_700</color>
   <color name="colorSurface">@android:color/system_neutral1_900</color>
+<!--  <color name="my_app_primary">#FF003549</color>-->
   <color name="my_app_primary">#FF003549</color>
   <color name="my_app_primary_dark">#E60032</color>
   <color name="my_app_secondary">#FFA500</color>

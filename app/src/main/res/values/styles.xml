@@ -21,7 +21,14 @@
     <item name="cornerFamily">cut</item>
     <item name="cornerSize">8dp</item>
   </style>
-
+  <style name="ThemeOverlay.PChart.Material3TimePicker" parent="ThemeOverlay.Material3.MaterialTimePicker">
+    <item name="colorSurface">@color/white</item>
+    <item name="colorOnSurfaceVariant">@color/colorPrimary</item>
+    <item name="colorOnSurface">@color/green_light</item>
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorOnPrimaryContainer">@color/white</item>
+    <item name="colorPrimaryContainer">@color/colorPrimary</item>
+  </style>
   <style name="PopupMenuStyle" parent="Widget.AppCompat.PopupMenu">
     <item name="android:popupBackground">@color/white</item>
   </style>

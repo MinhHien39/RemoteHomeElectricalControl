@@ -1,25 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".RoomActivity">
+
+  <com.google.android.material.appbar.AppBarLayout
+    android:id="@+id/layoutTopAppBar"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <com.google.android.material.appbar.MaterialToolbar
+      android:id="@+id/topAppBar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:navigationIcon="@drawable/ic_left_arrow"
+      app:title="Room"
+      app:titleTextColor="@color/white" />
+
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:fillViewport="true"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/layoutTopAppBar"
     tools:context=".RoomActivity">
-    <TextView
-        android:layout_width="wrap_content"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Temperature"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/txtTemperature"/>
+        app:layout_constraintStart_toStartOf="parent">
 
-    <androidx.recyclerview.widget.RecyclerView
+        <com.google.android.material.card.MaterialCardView
+          android:id="@+id/cardViewDHT"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginHorizontal="24dp"
+          android:layout_marginTop="24dp"
+          android:backgroundTint="@color/white">
+
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/recDHT"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="8dp">
+
+            <TextView
+              android:id="@+id/txtTitleTemperature"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:paddingVertical="8dp"
+              android:text="Temperature Sensor"
+              android:textColor="@color/colorPrimary"
+              android:textSize="18sp"
+              android:textStyle="italic"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+              android:id="@+id/txtLabelTemp"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:paddingVertical="8dp"
+              android:text="Temperature"
+              android:textSize="18sp"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@+id/txtTitleTemperature" />
+
+            <TextView
+              android:id="@+id/txtTemp"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_toRightOf="@+id/recDHT"
+              android:paddingVertical="8dp"
+              android:text="-10°C"
+              android:textSize="18sp"
+              app:layout_constraintBottom_toTopOf="@+id/txtHumid"
+              app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+              android:id="@+id/txtLabelHumid"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@id/txtLabelTemp"
+              android:paddingVertical="8dp"
+              android:text="Humidity"
+              android:textSize="18sp"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@+id/txtLabelTemp" />
+
+            <TextView
+              android:id="@+id/txtHumid"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_toRightOf="@+id/txtLabelTemp"
+              android:paddingVertical="8dp"
+              android:text="69%"
+              android:textSize="18sp"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintEnd_toEndOf="parent" />
+          </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+          android:id="@+id/cardViewGas"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginHorizontal="24dp"
+          android:layout_marginTop="24dp"
+          android:backgroundTint="@color/white">
+
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/recGas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="8dp">
+
+            <TextView
+              android:id="@+id/txtTitleGas"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:paddingVertical="8dp"
+              android:text="Gas Sensor"
+              android:textColor="@color/colorPrimary"
+              android:textSize="18sp"
+              android:textStyle="italic"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+              android:id="@+id/txtLabelGas"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:paddingVertical="8dp"
+              android:text="State"
+              android:textSize="18sp"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@+id/txtTitleGas" />
+
+            <TextView
+              android:id="@+id/txtGas"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:paddingVertical="8dp"
+              android:text="Normal"
+              android:textSize="18sp"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintEnd_toEndOf="parent" />
+          </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+      </LinearLayout>
+
+      <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rec_room"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTemperature" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </androidx.core.widget.NestedScrollView>
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+    android:id="@+id/fab"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|end"
+    android:layout_marginEnd="24dp"
+    android:layout_marginBottom="32dp"
+    android:backgroundTint="@color/my_app_primary"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:srcCompat="@drawable/ic_mic" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

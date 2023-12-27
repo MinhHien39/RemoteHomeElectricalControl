@@ -109,6 +109,7 @@ public class SignupActivity extends AppCompatActivity {
 
   public void checkRegisteredAccount(String emailToCheck, String houseKeyToCheck, String fullName, String telephone, String password) {
     String encryptHouseKey = EncryptionUtils.encrypt(houseKeyToCheck);
+    Log.d("aaa", "encryptHouseKey: " + encryptHouseKey);
 
     housesRef.orderByChild("houseKey").equalTo(encryptHouseKey).addListenerForSingleValueEvent(new ValueEventListener() {
       @Override

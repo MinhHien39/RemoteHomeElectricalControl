@@ -47,13 +47,17 @@ public class LoginActivity extends AppCompatActivity {
     autoFillLoginForm();
 
     btnLogin.setOnClickListener(view -> {
-      String email = edtEmail.getText().toString();
-      String password = edtPassword.getText().toString();
-      if (checkAllFields(email, password))
-        isUserExist(email, password);
+      handleLogin();
     });
 
     txtSignup.setOnClickListener(v -> moveScreen(LoginActivity.this, SignupActivity.class));
+  }
+
+  private void handleLogin() {
+    String email = edtEmail.getText().toString();
+    String password = edtPassword.getText().toString();
+    if (checkAllFields(email, password))
+      isUserExist(email, password);
   }
 
   public void init() {
@@ -94,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
       edtEmail.setText(savedUsername);
       edtPassword.setText(savedPassword);
       cbRememberMe.setChecked(true);
+//      handleLogin();
     }
   }
 
@@ -135,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
             String email = userSnapshot.child("email").getValue(String.class);
             String password = userSnapshot.child("password").getValue(String.class);
             if (!password.equals(encryptPass)) {
-              Toast.makeText(LoginActivity.this, "Email or password is incorrect", Toast.LENGTH_LONG).show();
+              Toast.makeText(LoginActivity.this, "Email or password is incorrect.", Toast.LENGTH_LONG).show();
             } else {
               user = new User(userId, name, email, "", "");
               Log.d("aaa", user.toString());
@@ -164,12 +169,14 @@ public class LoginActivity extends AppCompatActivity {
   public void moveScreen(Activity currentScreen, Class<? extends Activity> nextScreenClass) {
     Intent intent = new Intent(currentScreen, nextScreenClass);
     startActivity(intent);
+    finish();
   }
 
   public void moveScreen(Activity currentScreen, Class<? extends Activity> nextScreenClass, User user) {
     SharedUser.setUser(user);
     Intent intent = new Intent(currentScreen, nextScreenClass);
     startActivity(intent);
+    finish();
   }
 
   public void autoFillLoginForm() {

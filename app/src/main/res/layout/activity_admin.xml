@@ -6,23 +6,40 @@
   android:layout_height="match_parent"
   tools:context=".AdminActivity">
 
-
-  <com.google.android.material.appbar.AppBarLayout
-    android:id="@+id/appBarLayout"
+  <LinearLayout
+    android:id="@+id/layoutTopAppBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
+    android:weightSum="1"
     app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.appbar.MaterialToolbar
-      android:id="@+id/topAppBar"
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/appBarLayout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:titleTextColor="@color/white"
-      app:title="Manage User"/>
+      android:layout_weight="1"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
 
-  </com.google.android.material.appbar.AppBarLayout>
+      <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="Manage User"
+        app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ImageButton
+      android:id="@+id/imgBtn"
+      android:layout_width="40dp"
+      android:layout_height="match_parent"
+      android:background="@color/my_app_primary"
+      android:contentDescription="More"
+      android:src="@drawable/ic_more" />
+
+  </LinearLayout>
 
   <TextView
     android:id="@+id/textView2"
@@ -34,7 +51,7 @@
     android:textSize="24sp"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+    app:layout_constraintTop_toBottomOf="@+id/layoutTopAppBar" />
 
   <com.google.android.material.divider.MaterialDivider
     android:layout_width="match_parent"
@@ -54,16 +71,16 @@
     app:layout_constraintVertical_bias="1.0" />
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
-      android:id="@+id/fab"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom|end"
-      android:layout_marginEnd="30dp"
-      android:layout_marginBottom="30dp"
-      android:contentDescription="Add"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:srcCompat="@drawable/ic_add" />
+    android:id="@+id/fab"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|end"
+    android:layout_marginEnd="30dp"
+    android:layout_marginBottom="30dp"
+    android:contentDescription="Add"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:srcCompat="@drawable/ic_add" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

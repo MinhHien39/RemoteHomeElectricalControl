@@ -2,6 +2,7 @@ package com.example.remotehomeelectricalcontrolsystem;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import com.example.remotehomeelectricalcontrolsystem.Adapter.FloorAdapter;
 import com.example.remotehomeelectricalcontrolsystem.Model.Devices;
 import com.example.remotehomeelectricalcontrolsystem.Model.Room;
 import com.example.remotehomeelectricalcontrolsystem.Utils.NetworkChangeListener;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +30,7 @@ import java.util.List;
 
 public class FloorActivity extends AppCompatActivity {
   RecyclerView rec_room_floor;
+  MaterialToolbar topAppBar;
   FloorAdapter floorAdapter;
   List<Room> roomList;
   List<Devices> list;
@@ -37,17 +40,33 @@ public class FloorActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_floor);
+
+    init();
+
     Intent intent = getIntent();
+
     if (intent != null) {
       String floorPath = intent.getStringExtra("floorPath");
-      Log.d("aaa", "path" + floorPath);
+      if (floorPath == null) {
+        SharedPreferences sharedPreferences = getSharedPreferences("house", MODE_PRIVATE);
+        String houseId = sharedPreferences.getString("houseId", "");
+        String floorId = sharedPreferences.getString("floorId", "");
+        floorPath = "test1/" + houseId + "/floors/" + floorId;
+      }
+      Log.d("aaa", "floorPath" + floorPath);
       getRooms(floorPath);
     }
+
+    topAppBar.setNavigationOnClickListener(view -> finish());
+  }
+
+  private void init() {
+    rec_room_floor = findViewById(R.id.rec_room_floor);
+    roomList = new ArrayList<>();
+    topAppBar = findViewById(R.id.topAppBar);
   }
 
   public void getRooms(String floorPath) {
-    rec_room_floor = findViewById(R.id.rec_room_floor);
-    roomList = new ArrayList<>();
     floorAdapter = new FloorAdapter(floorPath);
     rec_room_floor.setLayoutManager(new GridLayoutManager(this, 2));
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -56,6 +75,7 @@ public class FloorActivity extends AppCompatActivity {
       @Override
       public void onDataChange(@NonNull DataSnapshot snapshot) {
         String floorName = snapshot.child("name").getValue(String.class);
+        topAppBar.setTitle(floorName);
         Log.d("aaa", "floor name: " + floorName);
         for (DataSnapshot room : snapshot.child("rooms").getChildren()) {
           String idRoom = room.getKey();
@@ -71,7 +91,7 @@ public class FloorActivity extends AppCompatActivity {
               int startTime = dataDevice.child("startTime").getValue(Integer.class);
               int state = dataDevice.child("state").getValue(Integer.class);
               String imgUrlDevice = dataDevice.child("imgUrl").getValue(String.class);
-              list.add(new Devices(endTime, nameDevice, startTime, state, imgUrlDevice));
+              list.add(new Devices(idDevice, endTime, nameDevice, startTime, state, imgUrlDevice));
             }
 
             System.out.println("Check List " + list.size());

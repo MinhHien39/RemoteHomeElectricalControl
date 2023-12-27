@@ -1,26 +1,28 @@
 package com.example.remotehomeelectricalcontrolsystem.Model;
 
 public class Devices {
+    public String deviceId;
     public int endTime;
     public String nameDevice;
     public int startTime;
     public int state;
     public String imgUrl;
 
-    public String getImgUrl() {
-        return imgUrl;
-    }
-
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
-    }
-
-    public Devices(int endTime, String nameDevice, int startTime, int state , String imgUrl) {
+    public Devices(String deviceId, int endTime, String nameDevice, int startTime, int state, String imgUrl) {
+        this.deviceId = deviceId;
         this.endTime = endTime;
         this.nameDevice = nameDevice;
         this.startTime = startTime;
         this.state = state;
         this.imgUrl = imgUrl;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public int getEndTime() {
@@ -53,5 +55,13 @@ public class Devices {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

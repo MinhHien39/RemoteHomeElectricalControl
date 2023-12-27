@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".DeviceActivity">
+
+  <com.google.android.material.card.MaterialCardView
+    android:id="@+id/card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="30dp"
+    android:backgroundTint="@color/white"
+    app:layout_constraintTop_toBottomOf="@+id/layoutTopAppBar">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center">
+
+      <ImageView
+        android:id="@+id/imgDevice"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginVertical="50dp"
+        android:src="@drawable/led_on" />
+    </LinearLayout>
+  </com.google.android.material.card.MaterialCardView>
+
+  <com.google.android.material.appbar.AppBarLayout
+    android:id="@+id/layoutTopAppBar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <com.google.android.material.appbar.MaterialToolbar
+      android:id="@+id/topAppBar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:navigationIcon="@drawable/ic_left_arrow"
+      app:title="Device"
+      app:titleTextColor="@color/white" />
+
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <LinearLayout
+    android:id="@+id/linearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="32dp"
+    android:layout_marginTop="32dp"
+    android:layout_marginEnd="32dp"
+    android:orientation="horizontal"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/card">
+
+    <com.google.android.material.card.MaterialCardView
+      android:layout_width="140dp"
+      android:layout_height="90dp"
+      android:backgroundTint="@color/white">
+
+      <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/sw"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:checked="true"
+        android:text="On"
+        android:textSize="18sp" />
+
+      <com.google.android.material.slider.Slider
+        android:id="@+id/slider"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginTop="10dp"
+        app:labelBehavior="visible"
+        android:stepSize="1.0"
+        android:valueFrom="0.0"
+        android:valueTo="3.0" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <Space
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_weight="1" />
+
+    <com.google.android.material.card.MaterialCardView
+      android:id="@+id/cardViewTimer"
+      android:layout_width="140dp"
+      android:layout_height="90dp"
+      android:backgroundTint="@color/white"
+      android:clickable="true">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/timer" />
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8sp"
+          android:text="Timer"
+          android:textSize="18sp" />
+      </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+  </LinearLayout>
+
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="32dp"
+    android:layout_marginTop="32dp"
+    android:layout_marginEnd="32dp"
+    android:orientation="horizontal"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/linearLayout1">
+
+    <com.google.android.material.card.MaterialCardView
+      android:layout_width="140dp"
+      android:layout_height="90dp"
+      android:backgroundTint="@color/white">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Count"
+          android:textSize="18sp" />
+
+        <TextView
+          android:id="@+id/tvCount"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8sp"
+          android:text="18 times"
+          android:textSize="18sp" />
+      </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <Space
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_weight="1" />
+
+    <com.google.android.material.card.MaterialCardView
+      android:layout_width="140dp"
+      android:layout_height="90dp"
+      android:backgroundTint="@color/white">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Usages"
+          android:textSize="18sp" />
+
+        <TextView
+          android:id="@+id/tvUsages"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8sp"
+          android:text="1 hrs"
+          android:textSize="18sp" />
+      </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+  </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

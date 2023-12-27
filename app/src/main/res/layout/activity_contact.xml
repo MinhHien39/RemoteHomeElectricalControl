@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".ContactActivity">
+
+  <com.google.android.material.appbar.AppBarLayout
+    android:id="@+id/layoutTopAppBar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <com.google.android.material.appbar.MaterialToolbar
+      android:id="@+id/topAppBar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:navigationIcon="@drawable/ic_left_arrow"
+      app:title="Contact support"
+      app:titleTextColor="@color/white" />
+
+  </com.google.android.material.appbar.AppBarLayout>
+
+
+  <com.google.android.material.card.MaterialCardView
+    android:id="@+id/cardHien"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="24dp"
+    android:layout_marginEnd="16dp"
+    android:backgroundTint="@color/white"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/layoutTopAppBar"
+    tools:context=".ContactActivity">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:padding="16dp">
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Name: "
+          android:textSize="16dp" />
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Tran Minh Hien"
+          android:textStyle="bold"
+          android:textColor="@color/my_app_primary"
+          android:textSize="16dp" />
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Phone: "
+          android:textSize="16dp" />
+
+        <TextView
+          android:id="@+id/tvPhoneHien"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="0899248730"
+          android:textColor="@color/my_app_primary"
+          android:textSize="16dp" />
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Gmail:  "
+          android:textSize="16dp" />
+
+        <TextView
+          android:id="@+id/tvMailHien"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="tranminhhien@gmail.com"
+          android:textColor="@color/my_app_primary"
+          android:textSize="16dp" />
+      </LinearLayout>
+    </LinearLayout>
+
+  </com.google.android.material.card.MaterialCardView>
+
+  <com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="24dp"
+    android:layout_marginEnd="16dp"
+    android:backgroundTint="@color/white"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/cardHien"
+    tools:context=".ContactActivity">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:padding="16dp">
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Name: "
+          android:textSize="16dp" />
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Le Nguyen Nhut Dinh"
+          android:textColor="@color/my_app_primary"
+          android:textStyle="bold"
+          android:textSize="16dp" />
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Phone: "
+          android:textSize="16dp" />
+
+        <TextView
+          android:id="@+id/tvPhoneDinh"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="0965925991"
+          android:textColor="@color/my_app_primary"
+          android:textSize="16dp" />
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Gmail:  "
+          android:textSize="16dp" />
+
+        <TextView
+          android:id="@+id/tvMailDinh"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="lenguyennhutdinh@gmail.com"
+          android:textColor="@color/my_app_primary"
+          android:textSize="16dp" />
+      </LinearLayout>
+    </LinearLayout>
+
+  </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
