@@ -67,14 +67,28 @@
   <Button
     android:id="@+id/btnSave"
     style="@style/Widget.MaterialComponents.Button"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="0dp"
+    android:layout_height="55dp"
+    android:layout_marginStart="32dp"
+    android:layout_marginTop="32dp"
+    android:layout_marginEnd="16dp"
+    android:text="Save"
+    android:textColor="@android:color/white"
+    app:layout_constraintEnd_toStartOf="@+id/btnDelete"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/layoutEndTime" />
+
+  <Button
+    android:id="@+id/btnDelete"
+    style="@style/Widget.MaterialComponents.Button"
+    android:layout_width="55dp"
+    android:layout_height="55dp"
     android:layout_marginStart="32dp"
     android:layout_marginTop="32dp"
     android:layout_marginEnd="32dp"
-    android:text="Save"
+    android:backgroundTint="@color/my_app_error"
     android:textColor="@android:color/white"
+    android:drawableLeft="@drawable/ic_delete"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/layoutEndTime" />
 </androidx.constraintlayout.widget.ConstraintLayout>

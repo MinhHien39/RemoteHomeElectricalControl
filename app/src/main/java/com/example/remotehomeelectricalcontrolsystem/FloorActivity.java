@@ -87,8 +87,8 @@ public class FloorActivity extends AppCompatActivity {
             list = new ArrayList<>();
             for (int i = 0; i < listCheck; i++) {
               String nameDevice = dataDevice.child("name").getValue(String.class);
-              int endTime = dataDevice.child("endTime").getValue(Integer.class);
-              int startTime = dataDevice.child("startTime").getValue(Integer.class);
+              String endTime = dataDevice.child("endTime").getValue(String.class);
+              String startTime = dataDevice.child("startTime").getValue(String.class);
               int state = dataDevice.child("state").getValue(Integer.class);
               String imgUrlDevice = dataDevice.child("imgUrl").getValue(String.class);
               list.add(new Devices(idDevice, endTime, nameDevice, startTime, state, imgUrlDevice));

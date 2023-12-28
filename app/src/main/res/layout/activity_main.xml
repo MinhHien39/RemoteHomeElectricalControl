@@ -67,6 +67,7 @@
     android:textAlignment="center"
     app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView"
     app:itemIconSize="30dp"
+    android:background="@color/my_app_primary"
     app:itemIconTint="@color/white"
     app:itemTextAppearanceActive="@color/active_color"
     app:itemTextAppearanceInactive="@color/active_color"

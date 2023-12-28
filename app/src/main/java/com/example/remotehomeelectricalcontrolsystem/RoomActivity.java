@@ -170,8 +170,8 @@ public class RoomActivity extends AppCompatActivity {
         for (DataSnapshot device : snapshot.child("devices").getChildren()) {
           String deviceId = device.getKey();
           String nameDevice = device.child("name").getValue(String.class);
-          int endTime = device.child("endTime").getValue(Integer.class);
-          int startTime = device.child("startTime").getValue(Integer.class);
+          String endTime = device.child("endTime").getValue(String.class);
+          String startTime = device.child("startTime").getValue(String.class);
           int state = device.child("state").getValue(Integer.class);
           Log.i("Check If", "Ok");
           deviceList.add(new Devices(deviceId, endTime, nameDevice, startTime, state, null));

@@ -2,13 +2,13 @@ package com.example.remotehomeelectricalcontrolsystem.Model;
 
 public class Devices {
     public String deviceId;
-    public int endTime;
+    public String endTime;
     public String nameDevice;
-    public int startTime;
+    public String startTime;
     public int state;
     public String imgUrl;
 
-    public Devices(String deviceId, int endTime, String nameDevice, int startTime, int state, String imgUrl) {
+    public Devices(String deviceId, String endTime, String nameDevice, String startTime, int state, String imgUrl) {
         this.deviceId = deviceId;
         this.endTime = endTime;
         this.nameDevice = nameDevice;
@@ -25,11 +25,11 @@ public class Devices {
         this.deviceId = deviceId;
     }
 
-    public int getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 
@@ -41,11 +41,11 @@ public class Devices {
         this.nameDevice = nameDevice;
     }
 
-    public int getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(int startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 

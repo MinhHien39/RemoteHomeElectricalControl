@@ -112,6 +112,7 @@ public class DeviceActivity extends AppCompatActivity {
     topAppBar.setNavigationOnClickListener(view -> finish());
     cardViewTimer.setOnClickListener(v -> {
       Intent intent1 = new Intent(DeviceActivity.this, TimerActivity.class);
+      intent1.putExtra("devicePath", devicePath);
       startActivity(intent1);
     });
   }

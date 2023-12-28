@@ -12,6 +12,8 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -177,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void handleLogout() {
-    MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(MainActivity.this).setTitle("Confirm logout").setMessage("Are you sure to log out?").setPositiveButton("Log out", (dialogInterface, i) -> {
+    MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(MainActivity.this).setBackground(new ColorDrawable(Color.parseColor("#FF003549"))).setTitle("Confirm logout").setMessage("Are you sure to log out?").setPositiveButton("Log out", (dialogInterface, i) -> {
       clearData();
       Toast.makeText(MainActivity.this, "Log out of account successfully!", Toast.LENGTH_SHORT).show();
       Intent intent = new Intent(MainActivity.this, LoginActivity.class);
